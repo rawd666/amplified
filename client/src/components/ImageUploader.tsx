@@ -53,7 +53,7 @@ export default function ImageUploader({ images, onChange, label, multiple = true
         onDragLeave={() => setOver(false)}
         onDrop={drop}
       >
-        {busy ? 'Uploading…' : 'Drop images here, or click to choose. JPG, PNG, WebP, AVIF — 6MB max.'}
+        {busy ? 'Uploading…' : 'Drop images here, or click to choose. JPG, PNG, WebP, AVIF - 6MB max.'}
       </div>
 
       <input

@@ -37,7 +37,7 @@ export default function Header({ categories }: { categories: Category[] }) {
         </Link>
 
         <nav className="plate__nav" data-open={navOpen} ref={nav} aria-label="Main">
-          {/* Store — submenu lists the four product categories */}
+          {/* Store - submenu lists the four product categories */}
           <div
             className="plate__group"
             onMouseEnter={() => setMenu('store')}
@@ -71,7 +71,7 @@ export default function Header({ categories }: { categories: Category[] }) {
             Gallery
           </NavLink>
 
-          {/* Reviews — submenu */}
+          {/* Reviews - submenu */}
           <div
             className="plate__group"
             onMouseEnter={() => setMenu('reviews')}

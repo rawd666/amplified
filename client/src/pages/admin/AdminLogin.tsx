@@ -63,7 +63,7 @@ export default function AdminLogin() {
         </button>
 
         <p className="muted" style={{ fontSize: '0.78rem', marginTop: '1.25rem' }}>
-          Seeded account: admin@amplified.jo / amplified123 — change it after the first run.{' '}
+          Seeded account: admin@amplified.jo / amplified123 - change it after the first run.{' '}
           <Link to="/">Back to the shop</Link>
         </p>
       </form>

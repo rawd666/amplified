@@ -58,7 +58,7 @@ export default function Booking() {
             <h1 className="headline headline--lg">See you at the shop</h1>
             <p className="receipt__ref">{reference}</p>
             <p>
-              {dayLabel(slotDate)} at {slotTime}. Bring your own cable if you have a favourite — we
+              {dayLabel(slotDate)} at {slotTime}. Bring your own cable if you have a favourite - we
               will have the amp warm.
             </p>
             <div className="receipt__acts" style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -83,7 +83,7 @@ export default function Booking() {
             <p className="stencil">Booking</p>
             <h1 className="headline headline--lg">Book the room</h1>
             <p className="muted">
-              The back room is yours for an hour — amps, cables, and nobody hovering. Slots run
+              The back room is yours for an hour - amps, cables, and nobody hovering. Slots run
               10:00 to 19:00, one booking at a time.
             </p>
           </div>
@@ -91,7 +91,7 @@ export default function Booking() {
 
         <form className="checkout" onSubmit={submit}>
           <div className="pane">
-            <p className="stencil">01 — What for</p>
+            <p className="stencil">01 - What for</p>
             <div className="pick">
               {REASONS.map((r) => (
                 <button
@@ -108,7 +108,7 @@ export default function Booking() {
             </div>
 
             <p className="stencil" style={{ marginTop: '1.75rem' }}>
-              02 — When
+              02 - When
             </p>
             <label className="field">
               <span>Day</span>
@@ -142,7 +142,7 @@ export default function Booking() {
           </div>
 
           <div className="pane">
-            <p className="stencil">03 — You</p>
+            <p className="stencil">03 - You</p>
             <label className="field">
               <span>Full name</span>
               <input value={form.customer} onChange={set('customer')} required />

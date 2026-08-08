@@ -28,7 +28,7 @@ import { api } from './lib/api';
 import type { Category } from './lib/types';
 
 export default function App() {
-  // The admin lives behind its own chrome — no shop header, no cart.
+  // The admin lives behind its own chrome - no shop header, no cart.
   const isAdmin = useLocation().pathname.startsWith('/admin');
 
   // Categories drive the store submenus, so they are fetched once and shared.

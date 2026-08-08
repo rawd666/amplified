@@ -98,7 +98,7 @@ export default function AdminCategories() {
               </td>
               <td style={{ maxWidth: 320 }}>
                 <span className="muted" style={{ fontSize: '0.82rem' }}>
-                  {c.blurb || '—'}
+                  {c.blurb || '-'}
                 </span>
               </td>
               <td>{c.product_count ?? 0}</td>
@@ -144,7 +144,7 @@ export default function AdminCategories() {
               <input value={draft.name} onChange={set('name')} required />
             </label>
             <label className="field">
-              <span>Slug — leave empty to generate from the name</span>
+              <span>Slug - leave empty to generate from the name</span>
               <input value={draft.slug} onChange={set('slug')} placeholder="amplifiers" />
             </label>
             <label className="field">

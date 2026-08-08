@@ -103,7 +103,7 @@ export default function AdminGallery() {
               <td>
                 <img className="table__thumb" src={s.url} alt="" />
               </td>
-              <td>{s.caption || '—'}</td>
+              <td>{s.caption || '-'}</td>
               <td>
                 <span className="tag">{s.tag}</span>
               </td>

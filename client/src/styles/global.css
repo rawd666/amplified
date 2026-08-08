@@ -1,5 +1,5 @@
 /* ============================================================
-   Amplified design system — "the amp faceplate"
+   Amplified design system - "the amp faceplate"
    Palette is purple / black / white / grey, as briefed.
    Surfaces borrow from a valve amp: brushed grey panels,
    silkscreened mono labels, a purple jewel lamp that glows.
@@ -281,7 +281,7 @@ textarea {
 }
 
 /* ============================================================
-   Header — a faceplate strip bolted to the top of the page
+   Header - a faceplate strip bolted to the top of the page
    ============================================================ */
 
 .plate {
@@ -376,7 +376,7 @@ textarea {
   gap: 0.15rem;
 }
 
-/* invisible bridge over the gap above the menu — without it, the
+/* invisible bridge over the gap above the menu - without it, the
    mouse crosses a dead zone that belongs to neither the trigger nor
    the menu on its way down, which fires mouseleave on .plate__group
    and closes the menu before you can reach a submenu item */
@@ -510,7 +510,7 @@ textarea {
 }
 
 /* Full-height flex layer so the guitar can be vertically centered
-   without a transform on this wrapper — a transform (or filter) here
+   without a transform on this wrapper - a transform (or filter) here
    would start a new stacking context and trap both image layers
    together as one unit, defeating the behind/in-front split below. */
 .hero__guitar {
@@ -534,7 +534,7 @@ textarea {
 /* anchored to the shell's own right inset (nudged in a bit further),
    so it sits close to the same distance from the screen edge as the
    text does on the left. Rendered as two stacked copies of the same
-   image, each clipped to half — the top (neck/headstock) sits behind
+   image, each clipped to half - the top (neck/headstock) sits behind
    the copy, the bottom (body) sits in front of it. The rotation and
    shadow live on each image (not the shared wrapper above) so the
    two layers can still be reordered independently against the text. */
@@ -716,7 +716,7 @@ textarea {
   color: #ff5470;
 }
 
-/* store filter row — knob-style toggles */
+/* store filter row - knob-style toggles */
 .filters {
   display: flex;
   flex-wrap: wrap;

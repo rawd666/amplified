@@ -156,7 +156,7 @@ export default function AdminOrders() {
                 </td>
                 <td>{b.reason}</td>
                 <td className="muted" style={{ fontSize: '0.82rem' }}>
-                  {b.interest || '—'}
+                  {b.interest || '-'}
                   {b.notes ? ` · ${b.notes}` : ''}
                 </td>
                 <td>

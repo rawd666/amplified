@@ -174,7 +174,7 @@ export default function AdminProducts() {
               <td>{p.stock}</td>
               <td>
                 <span className="tag" data-on={p.featured}>
-                  {p.featured ? 'On the wall' : '—'}
+                  {p.featured ? 'On the wall' : '-'}
                 </span>
               </td>
               <td>
@@ -266,7 +266,7 @@ export default function AdminProducts() {
             </label>
 
             <label className="field">
-              <span>Specs — one per line</span>
+              <span>Specs - one per line</span>
               <textarea
                 rows={4}
                 value={draft.specs}

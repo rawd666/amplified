@@ -1,14 +1,14 @@
-# Amplified — guitars, amps, pedals, accessories
+# Amplified - guitars, amps, pedals, accessories
 
 A full ecommerce site for a guitar shop, styled like the faceplate of a vintage amp: brushed grey
 panels, silkscreened labels, one glowing purple jewel lamp.
 
-- **Storefront** — store with category submenus, gallery, reviews section with its own submenu
-- **Categories** — guitars, amplifiers, pedals, accessories (editable from the admin)
-- **Checkout** — **cash on delivery only**, choose delivery or a booked in‑store pickup slot
-- **Bookings** — book the back room for a try‑out, setup, repair or lesson (one booking per slot)
-- **Instagram DMs** — linked from the header, footer, cart, product pages and every receipt
-- **Admin** — token‑protected back office for categories, products, product images, gallery photos,
+- **Storefront** - store with category submenus, gallery, reviews section with its own submenu
+- **Categories** - guitars, amplifiers, pedals, accessories (editable from the admin)
+- **Checkout** - **cash on delivery only**, choose delivery or a booked in‑store pickup slot
+- **Bookings** - book the back room for a try‑out, setup, repair or lesson (one booking per slot)
+- **Instagram DMs** - linked from the header, footer, cart, product pages and every receipt
+- **Admin** - token‑protected back office for categories, products, product images, gallery photos,
   review moderation, orders and bookings
 
 ## Stack
@@ -30,7 +30,7 @@ npm run dev                          # api on :4000, site on :5173
 
 Open http://localhost:5173. The admin is at http://localhost:5173/admin.
 
-**Seeded admin:** `admin@amplified.jo` / `amplified123` — change these in `server/.env` before you
+**Seeded admin:** `admin@amplified.jo` / `amplified123` - change these in `server/.env` before you
 seed, or change the password from the API (`POST /api/auth/password`) after.
 
 Production:
@@ -136,15 +136,15 @@ amplified/
 | GET | `/api/reviews?all=1` | admin |
 | POST | `/api/reviews` | public (queued for moderation) |
 | PATCH/DELETE | `/api/reviews/:id` | admin |
-| POST | `/api/orders` | public — returns `FL-XXXXX` |
+| POST | `/api/orders` | public - returns `FL-XXXXX` |
 | GET/PATCH | `/api/orders` | admin |
 | GET | `/api/bookings/taken?date=` | public |
-| POST | `/api/bookings` | public — returns `BK-XXXXX` |
+| POST | `/api/bookings` | public - returns `BK-XXXXX` |
 | GET/PATCH | `/api/bookings` | admin |
 
 ## Notes before going live
 
-- Swap `INSTAGRAM_HANDLE` in `client/src/lib/api.ts` for the real handle — the DM deep link
+- Swap `INSTAGRAM_HANDLE` in `client/src/lib/api.ts` for the real handle - the DM deep link
   (`https://ig.me/m/<handle>`) is built from it.
 - Uploads are stored on the local disk. On a platform with an ephemeral filesystem, point multer at
   S3 or a similar bucket instead.
