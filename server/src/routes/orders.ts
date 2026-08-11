@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { db, reference } from '../db.js';
 import { requireAdmin } from '../auth.js';
 import { safeParse } from '../types.js';
+import { sendOrderNotification } from '../mailer.js';
 
 /* ---------- orders: cash on delivery only ---------- */
 
@@ -62,6 +63,21 @@ ordersRouter.post('/', (req, res) => {
     d.slot_date ?? '',
     d.slot_time ?? '',
   );
+
+  void sendOrderNotification({
+    reference: ref,
+    customer: d.customer,
+    phone: d.phone,
+    email: d.email ?? '',
+    address: d.address ?? '',
+    city: d.city ?? '',
+    notes: d.notes ?? '',
+    items: d.items,
+    total,
+    fulfilment: d.fulfilment,
+    slot_date: d.slot_date ?? '',
+    slot_time: d.slot_time ?? '',
+  });
 
   res.status(201).json({ reference: ref, total, payment: 'cash-on-delivery' });
 });
