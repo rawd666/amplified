@@ -3,14 +3,9 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import type { Category } from '../lib/types';
 
-const REVIEW_LINKS = [
-  { to: '/reviews', label: 'All reviews', hint: 'What players said after the gig' },
-  { to: '/reviews/write', label: 'Write a review', hint: 'Rate the gear you bought from us' },
-];
-
 export default function Header({ categories }: { categories: Category[] }) {
   const { count, setOpen } = useCart();
-  const [menu, setMenu] = useState<'store' | 'reviews' | null>(null);
+  const [menu, setMenu] = useState<'store' | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   const { pathname } = useLocation();
   const nav = useRef<HTMLElement>(null);
@@ -71,31 +66,9 @@ export default function Header({ categories }: { categories: Category[] }) {
             Gallery
           </NavLink>
 
-          {/* Reviews - submenu */}
-          <div
-            className="plate__group"
-            onMouseEnter={() => setMenu('reviews')}
-            onMouseLeave={() => setMenu(null)}
-          >
-            <button
-              className="plate__link"
-              aria-expanded={menu === 'reviews'}
-              aria-current={pathname.startsWith('/reviews') ? 'page' : undefined}
-              onClick={() => setMenu(menu === 'reviews' ? null : 'reviews')}
-            >
-              Reviews <span aria-hidden="true">▾</span>
-            </button>
-            {menu === 'reviews' && (
-              <div className="plate__menu">
-                {REVIEW_LINKS.map((l) => (
-                  <Link key={l.to} className="plate__menu-item" to={l.to}>
-                    <strong>{l.label}</strong>
-                    <small>{l.hint}</small>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <NavLink className="plate__link" to="/gear-demos">
+            Gear demos
+          </NavLink>
 
           <NavLink className="plate__link" to="/booking">
             Book a try-out

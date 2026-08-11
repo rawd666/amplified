@@ -5,6 +5,7 @@ const TABS = [
   { to: '/admin/products', label: 'Products' },
   { to: '/admin/categories', label: 'Categories' },
   { to: '/admin/gallery', label: 'Gallery' },
+  { to: '/admin/demos', label: 'Gear demos' },
   { to: '/admin/reviews', label: 'Reviews' },
   { to: '/admin/orders', label: 'Orders & bookings' },
 ];

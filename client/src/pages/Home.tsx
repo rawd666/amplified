@@ -1,16 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import ReviewForm from '../components/ReviewForm';
+import StarRating from '../components/StarRating';
 import { api, INSTAGRAM_DM } from '../lib/api';
-import type { Category, Product } from '../lib/types';
+import { shortDate } from '../lib/format';
+import type { Category, Product, Review } from '../lib/types';
 
 export default function Home({ categories }: { categories: Category[] }) {
   const [featured, setFeatured] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewTab, setReviewTab] = useState<'reviews' | 'write'>('reviews');
 
   useEffect(() => {
     api<Product[]>('/products?featured=1')
       .then((rows) => setFeatured(rows.slice(0, 4)))
       .catch(() => setFeatured([]));
+  }, []);
+
+  useEffect(() => {
+    api<Review[]>('/reviews')
+      .then(setReviews)
+      .catch(() => setReviews([]));
   }, []);
 
   return (
@@ -96,6 +107,56 @@ export default function Home({ categories }: { categories: Category[] }) {
           </div>
         </section>
       )}
+
+      <section className="section section--edge">
+        <div className="shell">
+          <div className="section__head">
+            <div>
+              <p className="stencil">Straight from the players</p>
+              <h2 className="headline headline--lg">Reviews</h2>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                className="chip"
+                aria-pressed={reviewTab === 'reviews'}
+                onClick={() => setReviewTab('reviews')}
+              >
+                Reviews
+              </button>
+              <button
+                className="chip"
+                aria-pressed={reviewTab === 'write'}
+                onClick={() => setReviewTab('write')}
+              >
+                Write a review
+              </button>
+            </div>
+          </div>
+
+          {reviewTab === 'write' ? (
+            <ReviewForm />
+          ) : reviews.length === 0 ? (
+            <div className="empty">No reviews yet. Be the first.</div>
+          ) : (
+            <>
+              {reviews.slice(0, 3).map((r) => (
+                <article className="review" key={r.id}>
+                  <div className="review__top">
+                    <span className="review__who">{r.author}</span>
+                    <span className="review__when">{shortDate(r.created_at)}</span>
+                  </div>
+                  <StarRating value={r.rating} />
+                  {r.title && <h3>{r.title}</h3>}
+                  <p>{r.body}</p>
+                </article>
+              ))}
+              <Link className="btn btn--sm" to="/reviews" style={{ marginTop: '0.5rem' }}>
+                View more
+              </Link>
+            </>
+          )}
+        </div>
+      </section>
 
       <section className="section section--edge">
         <div className="shell">

@@ -48,6 +48,15 @@ db.exec(`
     position  INTEGER NOT NULL DEFAULT 0
   );
 
+  CREATE TABLE IF NOT EXISTS demos (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    url           TEXT NOT NULL,
+    product_name  TEXT NOT NULL DEFAULT '',
+    description   TEXT NOT NULL DEFAULT '',
+    position      INTEGER NOT NULL DEFAULT 0,
+    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE TABLE IF NOT EXISTS reviews (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id  INTEGER REFERENCES products(id) ON DELETE SET NULL,

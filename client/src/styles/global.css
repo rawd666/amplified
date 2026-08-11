@@ -933,6 +933,27 @@ textarea {
   text-align: left;
 }
 
+.gallery__item--video video {
+  display: block;
+  width: 100%;
+  pointer-events: none;
+}
+
+.gallery__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(11, 10, 14, 0.75);
+  color: var(--chalk);
+  font-size: 1rem;
+}
+
 .lightbox {
   position: fixed;
   inset: 0;
@@ -944,7 +965,8 @@ textarea {
   border: 0;
 }
 
-.lightbox img {
+.lightbox img,
+.lightbox video {
   max-width: min(1100px, 92vw);
   max-height: 82vh;
   object-fit: contain;
@@ -968,46 +990,6 @@ textarea {
 /* ============================================================
    Reviews
    ============================================================ */
-
-.reviews {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding: 3rem 0;
-}
-
-.reviews__side {
-  position: sticky;
-  top: 100px;
-  align-self: start;
-  display: grid;
-  gap: 0.25rem;
-  padding: 1rem;
-  background: var(--brushed);
-  border: 1px solid var(--steel-line);
-  border-radius: var(--radius);
-  height: fit-content;
-}
-
-.reviews__tab {
-  padding: 0.7rem 0.85rem;
-  border-radius: var(--radius);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--grey);
-}
-
-.reviews__tab:hover {
-  color: var(--chalk);
-  background: var(--steel);
-}
-
-.reviews__tab[aria-current='page'] {
-  background: var(--violet);
-  color: var(--white);
-}
 
 .review {
   padding: 1.4rem;
@@ -1088,18 +1070,6 @@ textarea {
   font-family: var(--mono);
   font-size: 0.75rem;
   color: var(--violet-hot);
-}
-
-@media (max-width: 800px) {
-  .reviews {
-    grid-template-columns: 1fr;
-  }
-
-  .reviews__side {
-    position: static;
-    grid-auto-flow: column;
-    overflow-x: auto;
-  }
 }
 
 /* ============================================================

@@ -32,13 +32,10 @@ export default function Footer({ categories }: { categories: Category[] }) {
           </div>
 
           <div>
-            <h4>Reviews</h4>
+            <h4>Gear demos</h4>
             <ul>
               <li>
-                <Link to="/reviews">All reviews</Link>
-              </li>
-              <li>
-                <Link to="/reviews/write">Write a review</Link>
+                <Link to="/gear-demos">Shop-floor clips</Link>
               </li>
             </ul>
           </div>

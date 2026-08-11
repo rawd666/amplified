@@ -13,19 +13,33 @@ export const uploadsDir = path.resolve(__dirname, '../../uploads');
 fs.mkdirSync(uploadsDir, { recursive: true });
 
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+const ALLOWED_VIDEO = ['video/mp4', 'video/webm', 'video/quicktime', 'video/ogg'];
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, uploadsDir),
+  filename: (_req, file, cb) => {
+    const safe = file.originalname.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+    cb(null, `${Date.now()}-${safe}`);
+  },
+});
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadsDir),
-    filename: (_req, file, cb) => {
-      const safe = file.originalname.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
-      cb(null, `${Date.now()}-${safe}`);
-    },
-  }),
+  storage,
   limits: { fileSize: 6 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (!ALLOWED.includes(file.mimetype)) {
       return cb(new Error('Upload a JPG, PNG, WEBP or AVIF image.'));
+    }
+    cb(null, true);
+  },
+});
+
+const uploadVideo = multer({
+  storage,
+  limits: { fileSize: 80 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!ALLOWED_VIDEO.includes(file.mimetype)) {
+      return cb(new Error('Upload an MP4, WebM, MOV or OGG video.'));
     }
     cb(null, true);
   },
@@ -38,6 +52,12 @@ uploadsRouter.post('/', requireAdmin, upload.array('images', 8), (req, res) => {
   const files = (req.files as Express.Multer.File[]) ?? [];
   if (!files.length) return res.status(400).json({ error: 'Choose at least one image.' });
   res.status(201).json({ urls: files.map((f) => `/uploads/${f.filename}`) });
+});
+
+/** A clip is one file, so this returns a single URL rather than an array. */
+uploadsRouter.post('/video', requireAdmin, uploadVideo.single('video'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Choose a video file.' });
+  res.status(201).json({ url: `/uploads/${req.file.filename}` });
 });
 
 uploadsRouter.delete('/', requireAdmin, (req, res) => {

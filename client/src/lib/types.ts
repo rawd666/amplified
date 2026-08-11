@@ -32,6 +32,15 @@ export interface GalleryShot {
   position: number;
 }
 
+export interface Demo {
+  id: number;
+  url: string;
+  product_name: string;
+  description: string;
+  position: number;
+  created_at: string;
+}
+
 export interface Review {
   id: number;
   product_id: number | null;

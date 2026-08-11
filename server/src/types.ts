@@ -29,6 +29,15 @@ export interface GalleryRow {
   position: number;
 }
 
+export interface DemoRow {
+  id: number;
+  url: string;
+  product_name: string;
+  description: string;
+  position: number;
+  created_at: string;
+}
+
 export interface ReviewRow {
   id: number;
   product_id: number | null;

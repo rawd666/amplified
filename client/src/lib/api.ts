@@ -41,3 +41,10 @@ export async function uploadImages(files: FileList | File[]): Promise<string[]> 
   const { urls } = await api<{ urls: string[] }>('/uploads', { method: 'POST', body: form });
   return urls;
 }
+
+export async function uploadVideo(file: File): Promise<string> {
+  const form = new FormData();
+  form.append('video', file);
+  const { url } = await api<{ url: string }>('/uploads/video', { method: 'POST', body: form });
+  return url;
+}

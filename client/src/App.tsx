@@ -12,15 +12,16 @@ import Gallery from './pages/Gallery';
 import Booking from './pages/Booking';
 import Checkout from './pages/Checkout';
 
-import ReviewsLayout from './pages/reviews/ReviewsLayout';
 import AllReviews from './pages/reviews/AllReviews';
 import WriteReview from './pages/reviews/WriteReview';
+import VideoDemos from './pages/reviews/VideoDemos';
 
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminGallery from './pages/admin/AdminGallery';
+import AdminVideoDemos from './pages/admin/AdminVideoDemos';
 import AdminReviews from './pages/admin/AdminReviews';
 import AdminOrders from './pages/admin/AdminOrders';
 
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="gallery" element={<AdminGallery />} />
+          <Route path="demos" element={<AdminVideoDemos />} />
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="orders" element={<AdminOrders />} />
         </Route>
@@ -77,10 +79,9 @@ export default function App() {
           <Route path="/booking" element={<Booking />} />
           <Route path="/checkout" element={<Checkout />} />
 
-          <Route path="/reviews" element={<ReviewsLayout />}>
-            <Route index element={<AllReviews />} />
-            <Route path="write" element={<WriteReview />} />
-          </Route>
+          <Route path="/reviews" element={<AllReviews />} />
+          <Route path="/reviews/write" element={<WriteReview />} />
+          <Route path="/gear-demos" element={<VideoDemos />} />
 
           <Route
             path="*"

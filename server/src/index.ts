@@ -9,6 +9,7 @@ import { productsRouter } from './routes/products.js';
 import { reviewsRouter } from './routes/reviews.js';
 import { ordersRouter, bookingsRouter } from './routes/orders.js';
 import { uploadsRouter, galleryRouter, uploadsDir } from './routes/uploads.js';
+import { demosRouter } from './routes/demos.js';
 import './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -23,6 +24,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/gallery', galleryRouter);
+app.use('/api/demos', demosRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/bookings', bookingsRouter);
