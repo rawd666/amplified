@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    image: amplified:latest
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - server/.env
+    volumes:
+      - amplified_data:/app/server
+
+volumes:
+  amplified_data:
