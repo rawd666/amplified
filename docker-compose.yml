@@ -2,13 +2,29 @@ services:
   app:
     build: .
     image: amplified:latest
+    container_name: amplified
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:4000:4000"
     env_file:
       - server/.env
     volumes:
       - amplified_data:/app/server
+    networks:
+      - edge-traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=edge-traefik"
+      - "traefik.http.middlewares.amplified-compress.compress=true"
+      - "traefik.http.middlewares.amplified-compress.compress.encodings=br,zstd,gzip"
+      - "traefik.http.middlewares.amplified-secheaders.headers.customResponseHeaders.Server="
+      - "traefik.http.routers.amplified-web.rule=Host(`amplified-jo.com`)"
+      - "traefik.http.routers.amplified-web.entrypoints=websecure"
+      - "traefik.http.routers.amplified-web.tls.certresolver=le"
+      - "traefik.http.routers.amplified-web.middlewares=amplified-compress@docker,amplified-secheaders@docker"
+      - "traefik.http.services.amplified-web.loadbalancer.server.port=4000"
 
 volumes:
   amplified_data:
+
+networks:
+  edge-traefik:
+    external: true
