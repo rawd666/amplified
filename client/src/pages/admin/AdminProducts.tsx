@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import ImageUploader from '../../components/ImageUploader';
+import ProductImageUploader from '../../components/ProductImageUploader';
+import { getCropStyle, type ProductImage } from '../../lib/crop';
 import { api } from '../../lib/api';
 import { money } from '../../lib/format';
 import type { Category, Product } from '../../lib/types';
@@ -13,7 +14,7 @@ interface Draft {
   stock: string;
   description: string;
   specs: string;
-  images: string[];
+  images: ProductImage[];
   featured: boolean;
 }
 
@@ -160,7 +161,9 @@ export default function AdminProducts() {
           {shown.map((p) => (
             <tr key={p.id}>
               <td>
-                <img className="table__thumb" src={p.images[0] ?? ''} alt="" />
+                <span className="table__thumb">
+                  <img src={p.images[0]?.url ?? ''} alt="" style={getCropStyle(p.images[0]?.crop)} />
+                </span>
               </td>
               <td>
                 <strong>{p.name}</strong>
@@ -275,7 +278,7 @@ export default function AdminProducts() {
               />
             </label>
 
-            <ImageUploader images={draft.images} onChange={(images) => set('images', images)} />
+            <ProductImageUploader images={draft.images} onChange={(images) => set('images', images)} />
 
             <label className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.6rem' }}>
               <input

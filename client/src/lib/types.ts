@@ -1,3 +1,5 @@
+import type { ProductImage } from './crop';
+
 export interface Category {
   id: number;
   slug: string;
@@ -19,7 +21,7 @@ export interface Product {
   stock: number;
   description: string;
   specs: string[];
-  images: string[];
+  images: ProductImage[];
   featured: boolean;
   created_at: string;
 }

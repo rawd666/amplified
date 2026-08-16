@@ -107,11 +107,13 @@
 }
 
 .table__thumb {
+  position: relative;
+  display: block;
   width: 46px;
-  height: 46px;
+  height: 69px;
   border-radius: var(--radius);
-  object-fit: cover;
   background: var(--steel);
+  overflow: hidden;
 }
 
 .table__actions {
@@ -228,6 +230,71 @@
 
 .shots__kill:hover {
   background: #ff5470;
+}
+
+/* product image thumb strip - vertical 3:2, WYSIWYG with the live site's crop */
+.pshots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.pshots__item {
+  position: relative;
+  width: 90px;
+  aspect-ratio: 2 / 3;
+  border: 1px solid var(--steel-line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--ink-2);
+}
+
+.pshots__reposition {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.3rem 0;
+  border: 0;
+  background: rgba(11, 10, 14, 0.85);
+  color: var(--chalk);
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.pshots__reposition:hover {
+  background: var(--violet);
+}
+
+.pshots__kill {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 2px;
+  background: rgba(11, 10, 14, 0.85);
+  color: var(--chalk);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.pshots__kill:hover {
+  background: #ff5470;
+}
+
+.cropper-stage {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: var(--ink-2);
+  border: 1px solid var(--steel-line);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 @media (max-width: 800px) {

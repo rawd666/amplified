@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import StarRating from '../components/StarRating';
 import { useCart } from '../context/CartContext';
 import { api, INSTAGRAM_DM } from '../lib/api';
+import { getCropStyle } from '../lib/crop';
 import { money, shortDate } from '../lib/format';
 import type { Product, Review } from '../lib/types';
 
@@ -46,22 +47,26 @@ export default function ProductDetail() {
         <div>
           <div className="detail__stage">
             {product.images[shot] ? (
-              <img src={product.images[shot]} alt={product.name} />
+              <img
+                src={product.images[shot].url}
+                alt={product.name}
+                style={getCropStyle(product.images[shot].crop)}
+              />
             ) : (
               <span className="card__shot-fallback">{product.name.slice(0, 2)}</span>
             )}
           </div>
           {product.images.length > 1 && (
             <div className="detail__thumbs">
-              {product.images.map((url, i) => (
+              {product.images.map((img, i) => (
                 <button
-                  key={url}
+                  key={img.url}
                   className="detail__thumb"
                   aria-pressed={i === shot}
                   aria-label={`View image ${i + 1}`}
                   onClick={() => setShot(i)}
                 >
-                  <img src={url} alt="" />
+                  <img src={img.url} alt="" />
                 </button>
               ))}
             </div>

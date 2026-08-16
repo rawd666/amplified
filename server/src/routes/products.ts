@@ -2,9 +2,21 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAdmin } from '../auth.js';
-import { hydrateProduct, slugify, type ProductRow } from '../types.js';
+import { hydrateProduct, slugify, type ProductImage, type ProductRow } from '../types.js';
 
 export const productsRouter = Router();
+
+const imageCrop = z.object({
+  x: z.number(),
+  y: z.number(),
+  width: z.number(),
+  height: z.number(),
+});
+
+const productImage = z.union([
+  z.string().transform((url): ProductImage => ({ url })),
+  z.object({ url: z.string(), crop: imageCrop.optional() }),
+]);
 
 const productInput = z.object({
   name: z.string().min(2, 'Give the product a name.'),
@@ -15,7 +27,7 @@ const productInput = z.object({
   stock: z.coerce.number().int().nonnegative(),
   description: z.string().optional(),
   specs: z.array(z.string()).optional(),
-  images: z.array(z.string()).optional(),
+  images: z.array(productImage).optional(),
   featured: z.boolean().optional(),
 });
 

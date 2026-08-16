@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { getCropStyle } from '../lib/crop';
 import { money } from '../lib/format';
 import type { Product } from '../lib/types';
 
@@ -11,7 +12,12 @@ export default function ProductCard({ product }: { product: Product }) {
     <article className="card">
       <Link to={`/product/${product.slug}`} className="card__shot">
         {product.images[0] ? (
-          <img src={product.images[0]} alt={product.name} loading="lazy" />
+          <img
+            src={product.images[0].url}
+            alt={product.name}
+            loading="lazy"
+            style={getCropStyle(product.images[0].crop)}
+          />
         ) : (
           <span className="card__shot-fallback">{product.name.slice(0, 2)}</span>
         )}

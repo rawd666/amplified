@@ -49,13 +49,28 @@ export interface ReviewRow {
   created_at: string;
 }
 
-/** Products store specs/images as JSON text; the API hands back real arrays. */
+export interface ImageCrop {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface ProductImage {
+  url: string;
+  crop?: ImageCrop;
+}
+
+/** Products store specs/images as JSON text; the API hands back real arrays.
+ *  Older rows saved `images` as plain URL strings - normalize those to
+ *  `{ url }` objects so every consumer sees the same shape. */
 export function hydrateProduct(row: ProductRow & { category_slug?: string; category_name?: string }) {
+  const rawImages = safeParse<Array<string | ProductImage>>(row.images, []);
   return {
     ...row,
     featured: Boolean(row.featured),
     specs: safeParse<string[]>(row.specs, []),
-    images: safeParse<string[]>(row.images, []),
+    images: rawImages.map((img): ProductImage => (typeof img === 'string' ? { url: img } : img)),
   };
 }
 
