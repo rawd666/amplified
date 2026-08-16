@@ -31,9 +31,10 @@ COPY --from=build /app/server/dist server/dist
 COPY --from=build /app/server/package.json server/package.json
 COPY --from=build /app/client/dist client/dist
 
-# SQLite data and uploaded files live here - mount a volume over this
-# directory so they survive container restarts and image rebuilds.
-RUN mkdir -p server/uploads && chown -R node:node /app
+# SQLite data and uploaded files live here - mount volumes over just these
+# two directories (not the whole server/ dir) so code updates from a fresh
+# image aren't shadowed by old persisted volume content on rebuild.
+RUN mkdir -p server/uploads server/data && chown -R node:node /app
 USER node
 
 EXPOSE 4000
