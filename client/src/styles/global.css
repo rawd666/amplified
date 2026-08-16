@@ -1,8 +1,8 @@
 /* ============================================================
    Amplified design system - "the amp faceplate"
-   Palette is purple / black / white / grey, as briefed.
+   Palette is purple / black / white / grey
    Surfaces borrow from a valve amp: brushed grey panels,
-   silkscreened mono labels, a purple jewel lamp that glows.
+   silkscreened mono labels, a purple lamp with glow.
    ============================================================ */
 
 :root {
@@ -525,7 +525,7 @@ textarea {
 
 .hero__guitar-inner {
   position: relative;
-  top: -10%;
+  top: -4vw;
   width: 70vw;
   max-width: 460px;
   aspect-ratio: 3 / 2;

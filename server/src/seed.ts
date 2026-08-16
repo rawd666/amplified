@@ -151,4 +151,4 @@ const insertReview = db.prepare(
 const reviewCount = db.prepare('SELECT COUNT(*) AS n FROM reviews').get() as { n: number };
 if (reviewCount.n === 0) for (const r of reviews) insertReview.run(...(r as [string, number, string, string]));
 
-console.log(`Seeded. Admin login: ${email} / ${password}`);
+console.log(`Seeded.`);

@@ -58,7 +58,7 @@ export default function ReviewForm() {
   return (
     <form onSubmit={submit}>
       <p className="muted" style={{ marginTop: 0 }}>
-        Tell other players what the gear actually did. Staff check reviews before they publish.
+        Tell other players what the gear actually did.
       </p>
 
       {error && <div className="notice notice--error">{error}</div>}
