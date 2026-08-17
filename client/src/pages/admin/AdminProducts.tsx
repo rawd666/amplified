@@ -177,7 +177,7 @@ export default function AdminProducts() {
               <td>{p.stock}</td>
               <td>
                 <span className="tag" data-on={p.featured}>
-                  {p.featured ? 'On the wall' : '-'}
+                  {p.featured ? 'Hottest Items' : '-'}
                 </span>
               </td>
               <td>

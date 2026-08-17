@@ -85,7 +85,7 @@ export default function App() {
 
           <Route
             path="*"
-            element={<div className="empty">That page is not on the wall. Try the store.</div>}
+            element={<div className="empty">That page is not Hottest Items. Try the store.</div>}
           />
         </Routes>
       </main>

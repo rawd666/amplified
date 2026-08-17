@@ -42,12 +42,11 @@ export default function Home({ categories }: { categories: Category[] }) {
             volume
           </h1>
           <p className="hero__lede">
-            Guitars, amps, pedals and the small parts that keep a band running. Every instrument is
-            set up on the bench and played through a real amp before we let it leave.
+            Guitars, amps, pedals and the small parts that keep a band running.
           </p>
           <div className="hero__cta">
             <Link className="btn btn--primary" to="/store">
-              Shop the floor
+              Our Collection
             </Link>
             <Link className="btn" to="/booking">
               Book a try-out
@@ -63,8 +62,8 @@ export default function Home({ categories }: { categories: Category[] }) {
         <div className="shell">
           <div className="section__head">
             <div>
-              <p className="stencil">Four ways in</p>
-              <h2 className="headline headline--lg">The floor</h2>
+              <p className="stencil">What are you looking for?</p>
+              <h2 className="headline headline--lg">Our Collection</h2>
             </div>
           </div>
           <div className="grid">
@@ -92,7 +91,7 @@ export default function Home({ categories }: { categories: Category[] }) {
             <div className="section__head">
               <div>
                 <p className="stencil">Picked by the bench</p>
-                <h2 className="headline headline--lg">On the wall</h2>
+                <h2 className="headline headline--lg">Hottest Items</h2>
                 <p>The pieces we keep plugged in, because someone always asks to hear them.</p>
               </div>
               <Link className="btn btn--sm" to="/store">

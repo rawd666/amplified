@@ -25,10 +25,10 @@ export default function Gallery() {
         <div className="section__head">
           <div>
             <p className="stencil">Gallery</p>
-            <h1 className="headline headline--lg">The shop floor</h1>
+            <h1 className="headline headline--lg">Masterpieces we've sold</h1>
             <p>
-              Builds off the bench, amps mid-repair, and the customers who walked out grinning. Photos
-              go up as they happen.
+              We've had many magnificent guitars over the years, here are some highlights. 
+              Although they might be not be available at the moment, you never know what we might come across again. just in case ;)
             </p>
           </div>
         </div>
