@@ -22,6 +22,8 @@ export function getCropStyle(crop?: ImageCrop): CSSProperties {
   if (!crop) return { width: '100%', height: '100%', objectFit: 'cover' };
   return {
     position: 'absolute',
+    maxWidth: 'none',
+    maxHeight: 'none',
     width: `calc(100% * 100 / ${crop.width})`,
     height: `calc(100% * 100 / ${crop.height})`,
     left: `calc(-100% * ${crop.x} / ${crop.width})`,
