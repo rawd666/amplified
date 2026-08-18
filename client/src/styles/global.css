@@ -360,38 +360,7 @@ textarea {
   box-shadow: var(--lamp-glow);
 }
 
-/* dropdown submenus */
-.plate__group {
-  position: relative;
-}
-
-.plate__menu {
-  position: absolute;
-  top: calc(100% + 0.6rem);
-  left: 0;
-  min-width: 260px;
-  padding: 0.5rem;
-  background: var(--panel);
-  border: 1px solid var(--steel-line);
-  border-radius: var(--radius);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  display: grid;
-  gap: 0.15rem;
-}
-
-/* invisible bridge over the gap above the menu - without it, the
-   mouse crosses a dead zone that belongs to neither the trigger nor
-   the menu on its way down, which fires mouseleave on .plate__group
-   and closes the menu before you can reach a submenu item */
-.plate__menu::before {
-  content: '';
-  position: absolute;
-  top: -0.6rem;
-  left: 0;
-  right: 0;
-  height: 0.6rem;
-}
-
+/* store menu drawer items (see .drawer/.drawer__panel further down) */
 .plate__menu-item {
   display: block;
   padding: 0.6rem 0.75rem;
@@ -459,14 +428,6 @@ textarea {
 
   .plate__nav[data-open='false'] {
     display: none;
-  }
-
-  .plate__menu {
-    position: static;
-    box-shadow: none;
-    border: 0;
-    background: transparent;
-    padding-left: 1rem;
   }
 }
 
@@ -1103,6 +1064,48 @@ textarea {
     transform: translateX(24px);
     opacity: 0;
   }
+}
+
+/* store menu opens from the left instead, to read as "browse" rather
+   than "cart" at a glance */
+.drawer__panel--left {
+  right: auto;
+  left: 0;
+  border-left: 0;
+  border-right: 1px solid var(--steel-line);
+  animation-name: slide-in-left;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+}
+
+.store-menu__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.store-menu__children {
+  display: grid;
+  gap: 0.1rem;
+  padding-left: 0.75rem;
+  margin: 0.15rem 0 0.4rem;
+  border-left: 1px solid var(--steel-line);
+}
+
+.store-menu__child {
+  font-size: 0.85rem;
 }
 
 .drawer__head {

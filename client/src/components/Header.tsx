@@ -1,28 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import StoreMenu from './StoreMenu';
 import type { Category } from '../lib/types';
 
 export default function Header({ categories }: { categories: Category[] }) {
   const { count, setOpen } = useCart();
-  const [menu, setMenu] = useState<'store' | null>(null);
+  const [storeMenuOpen, setStoreMenuOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const { pathname } = useLocation();
-  const nav = useRef<HTMLElement>(null);
 
   // Any route change closes whatever is hanging open.
   useEffect(() => {
-    setMenu(null);
+    setStoreMenuOpen(false);
     setNavOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    const away = (e: MouseEvent) => {
-      if (nav.current && !nav.current.contains(e.target as Node)) setMenu(null);
-    };
-    document.addEventListener('mousedown', away);
-    return () => document.removeEventListener('mousedown', away);
-  }, []);
 
   return (
     <header className="plate">
@@ -31,36 +23,15 @@ export default function Header({ categories }: { categories: Category[] }) {
           <img src="/logo.png" alt="Amplified" className="plate__logo" />
         </Link>
 
-        <nav className="plate__nav" data-open={navOpen} ref={nav} aria-label="Main">
-          {/* Store - submenu lists the four product categories */}
-          <div
-            className="plate__group"
-            onMouseEnter={() => setMenu('store')}
-            onMouseLeave={() => setMenu(null)}
+        <nav className="plate__nav" data-open={navOpen} aria-label="Main">
+          <button
+            className="plate__link"
+            aria-expanded={storeMenuOpen}
+            aria-current={pathname.startsWith('/store') ? 'page' : undefined}
+            onClick={() => setStoreMenuOpen(true)}
           >
-            <button
-              className="plate__link"
-              aria-expanded={menu === 'store'}
-              aria-current={pathname.startsWith('/store') ? 'page' : undefined}
-              onClick={() => setMenu(menu === 'store' ? null : 'store')}
-            >
-              Store <span aria-hidden="true">▾</span>
-            </button>
-            {menu === 'store' && (
-              <div className="plate__menu">
-                <Link className="plate__menu-item" to="/store">
-                  <strong>All Items</strong>
-                  <small>The whole floor, newest first</small>
-                </Link>
-                {categories.filter((c) => !c.parent_id).map((c) => (
-                  <Link key={c.id} className="plate__menu-item" to={`/store/${c.slug}`}>
-                    <strong>{c.name}</strong>
-                    <small>{c.blurb || `${c.product_count ?? 0} in stock`}</small>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+            Store <span aria-hidden="true">▾</span>
+          </button>
 
           <NavLink className="plate__link" to="/gallery">
             Gallery
@@ -93,6 +64,8 @@ export default function Header({ categories }: { categories: Category[] }) {
           Menu
         </button>
       </div>
+
+      <StoreMenu categories={categories} open={storeMenuOpen} onClose={() => setStoreMenuOpen(false)} />
     </header>
   );
 }
