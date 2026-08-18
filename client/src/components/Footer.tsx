@@ -11,10 +11,6 @@ export default function Footer({ categories }: { categories: Category[] }) {
             <div className="plate__brand" style={{ marginBottom: '0.75rem' }}>
               <img src="/logo.png" alt="Amplified" className="plate__logo" />
             </div>
-            <p className="muted" style={{ maxWidth: '32ch', marginTop: 0 }}>
-              A guitar shop in Amman. Everything gets set up on the bench, plugged in, and played
-              before it goes out the door.
-            </p>
             <a className="foot__dm" href={INSTAGRAM_DM} target="_blank" rel="noreferrer">
               ◎ DM us on Instagram
             </a>

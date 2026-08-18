@@ -290,7 +290,7 @@ textarea {
   z-index: 40;
   background: var(--brushed);
   border-bottom: 1px solid var(--steel-line);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 .plate__inner {
@@ -314,7 +314,7 @@ textarea {
 
 .plate__logo {
   display: block;
-  height: 60px;
+  height: 90px;
   width: auto;
 }
 
