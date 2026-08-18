@@ -105,7 +105,7 @@ export const bookingsRouter = Router();
 const bookingInput = z.object({
   customer: z.string().min(2, 'Enter your full name.'),
   phone: z.string().min(7, 'Enter a phone number we can call.'),
-  reason: z.enum(['try-out', 'setup', 'repair', 'lesson']).default('try-out'),
+  reason: z.enum(['try-out', 'setup', 'sell']).default('try-out'),
   interest: z.string().optional(),
   slot_date: z.string().min(4, 'Pick a day.'),
   slot_time: z.string().min(3, 'Pick a time.'),

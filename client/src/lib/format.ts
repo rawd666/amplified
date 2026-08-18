@@ -12,10 +12,8 @@ export function shortDate(iso: string) {
   });
 }
 
-/** The shop floor takes one booking per slot, ten to eight. */
+/** The shop floor takes one booking per slot, noon to seven. */
 export const SLOTS = [
-  '10:00',
-  '11:00',
   '12:00',
   '13:00',
   '14:00',

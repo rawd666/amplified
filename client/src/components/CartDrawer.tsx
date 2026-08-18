@@ -73,7 +73,7 @@ export default function CartDrawer() {
             <span>{money(total)}</span>
           </div>
           <p className="muted" style={{ margin: 0, fontSize: '0.8rem' }}>
-            You pay the driver in cash when the gear arrives.
+            Cash on delivery.
           </p>
           <Link
             className="btn btn--primary btn--block"

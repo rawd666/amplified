@@ -6,7 +6,7 @@ panels, silkscreened labels, one glowing purple jewel lamp.
 - **Storefront** - store with category submenus, gallery, reviews section with its own submenu
 - **Categories** - guitars, amplifiers, pedals, accessories (editable from the admin)
 - **Checkout** - **cash on delivery only**, choose delivery or a booked in‑store pickup slot
-- **Bookings** - book the back room for a try‑out, setup, repair or lesson (one booking per slot)
+- **Bookings** - book the back room for a try‑out, setup, repair or sell (one booking per slot)
 - **Instagram DMs** - linked from the header, footer, cart, product pages and every receipt
 - **Admin** - token‑protected back office for categories, products, product images, gallery photos,
   review moderation, orders and bookings

@@ -5,9 +5,8 @@ import { bookableDays, dayLabel, SLOTS } from '../lib/format';
 
 const REASONS = [
   { id: 'try-out', label: 'Try gear out', hint: 'Plug in, turn it up, take your time.' },
-  { id: 'setup', label: 'Setup', hint: 'Action, intonation, fresh strings.' },
-  { id: 'repair', label: 'Repair', hint: 'Electronics, frets, hardware.' },
-  { id: 'lesson', label: 'Lesson', hint: 'One hour with one of our players.' },
+  { id: 'setup', label: 'Setup & Repairs', hint: 'Any sort of maintenance that your guitar could need.' },
+  { id: 'sell', label: 'Sell', hint: 'Set up an appointment to agree on the details.' },
 ];
 
 export default function Booking() {
@@ -81,11 +80,10 @@ export default function Booking() {
         <div className="section__head">
           <div>
             <p className="stencil">Booking</p>
-            <h1 className="headline headline--lg">Book the room</h1>
+            <h1 className="headline headline--lg">Make an appointment</h1>
             <p className="muted">
-              The back room is yours for an hour - amps, cables, and nobody hovering. Slots run
-              10:00 to 19:00, one booking at a time.
-            </p>
+              If you're looking to buy one of our guitars or even set up one of your own, pick a time and a date, 
+              and let us know what it's for. We'll be sure to get back to you within an hour.</p>
           </div>
         </div>
 
@@ -142,7 +140,7 @@ export default function Booking() {
           </div>
 
           <div className="pane">
-            <p className="stencil">03 - You</p>
+            <p className="stencil">03 - Your Info</p>
             <label className="field">
               <span>Full name</span>
               <input value={form.customer} onChange={set('customer')} required />
@@ -152,15 +150,7 @@ export default function Booking() {
               <input value={form.phone} onChange={set('phone')} required placeholder="07…" />
             </label>
             <label className="field">
-              <span>What do you want to play?</span>
-              <input
-                value={form.interest}
-                onChange={set('interest')}
-                placeholder="Valvewright 30, the Nightshade S-Type…"
-              />
-            </label>
-            <label className="field">
-              <span>Anything else</span>
+              <span>Tell us what you need</span>
               <textarea rows={3} value={form.notes} onChange={set('notes')} />
             </label>
 
