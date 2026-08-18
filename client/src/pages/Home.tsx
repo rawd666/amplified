@@ -90,7 +90,7 @@ export default function Home({ categories }: { categories: Category[] }) {
           <div className="shell">
             <div className="section__head">
               <div>
-                <p className="stencil">Picked by the bench</p>
+                <p className="stencil">on display</p>
                 <h2 className="headline headline--lg">Hottest Items</h2>
                 <p>The pieces we keep plugged in, because someone always asks to hear them.</p>
               </div>

@@ -18,7 +18,7 @@ const SELECT = `
   SELECT r.*, p.name AS product_name, p.slug AS product_slug
   FROM reviews r LEFT JOIN products p ON p.id = r.product_id`;
 
-/** Public list: approved only. Admin list (?all=1 with a token): everything. */
+/** Public list: approved only. Admin list (?all=1 with a token): all items. */
 reviewsRouter.get('/', (req, res) => {
   const wantsAll = req.query.all === '1';
   if (wantsAll) {

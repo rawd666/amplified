@@ -41,7 +41,7 @@ export default function Store({ categories }: { categories: Category[] }) {
         <div className="section__head">
           <div>
             <p className="stencil">Store</p>
-            <h1 className="headline headline--lg">{active ? active.name : 'Everything'}</h1>
+            <h1 className="headline headline--lg">{active ? active.name : 'All Items'}</h1>
             <p>{active ? active.blurb : 'The whole floor, newest arrivals first.'}</p>
           </div>
         </div>

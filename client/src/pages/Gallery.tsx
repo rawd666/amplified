@@ -28,7 +28,7 @@ export default function Gallery() {
             <h1 className="headline headline--lg">Masterpieces we've sold</h1>
             <p>
               We've had many magnificent guitars over the years, here are some highlights. 
-              Although they might be not be available at the moment, you never know what we might come across again. just in case ;)
+              Although they might be not be available at the moment, you never know what we might come across again. Just in case ;)
             </p>
           </div>
         </div>

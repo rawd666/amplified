@@ -20,11 +20,11 @@ export default function VideoDemos() {
       <div className="shell">
         <div className="section__head">
           <div>
-            <p className="stencil">Reviews</p>
+            <p className="stencil">By the team</p>
             <h1 className="headline headline--lg">Gear demos</h1>
             <p>
-              Our clients and friends have been demoing gear on the shop floor for years. These clips are
-              unpolished, unprocessed, and unedited. Just the way we like it.
+              In case you were wondering how a certain guitar sounds, we decided to shoot these videos for you to be able to get the clearest idea. 
+              All demos are being taken with guitars being run through average amps to get the most realistic sound.
             </p>
           </div>
         </div>
@@ -35,7 +35,7 @@ export default function VideoDemos() {
           <div className="empty">
             No clips up yet.{' '}
             <a href={INSTAGRAM_PROFILE} target="_blank" rel="noreferrer" style={{ color: 'var(--violet-hot)' }}>
-              Watch the shop floor on Instagram →
+              Check out our Instagram →
             </a>
           </div>
         ) : (

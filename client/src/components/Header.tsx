@@ -49,7 +49,7 @@ export default function Header({ categories }: { categories: Category[] }) {
             {menu === 'store' && (
               <div className="plate__menu">
                 <Link className="plate__menu-item" to="/store">
-                  <strong>Everything</strong>
+                  <strong>All Items</strong>
                   <small>The whole floor, newest first</small>
                 </Link>
                 {categories.map((c) => (

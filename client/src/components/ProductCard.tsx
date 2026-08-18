@@ -21,7 +21,7 @@ export default function ProductCard({ product }: { product: Product }) {
         ) : (
           <span className="card__shot-fallback">{product.name.slice(0, 2)}</span>
         )}
-        {product.featured && <span className="card__flag">Hottest Items</span>}
+        {product.featured && <span className="card__flag">Hot Item</span>}
       </Link>
 
       <div className="card__body">
