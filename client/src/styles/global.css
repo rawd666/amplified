@@ -316,6 +316,9 @@ textarea {
   display: block;
   height: 90px;
   width: auto;
+  /* logo.png has uneven transparent padding (more above the mark than below),
+     so centering its box doesn't center the visible mark - nudge it up. */
+  transform: translateY(-5.4px);
 }
 
 .plate__nav {
@@ -597,6 +600,12 @@ textarea {
 
 .section {
   padding: clamp(3.5rem, 8vw, 6rem) 0;
+}
+
+/* Back-to-back sections (home page) would otherwise stack a full bottom
+   padding against a full top padding - trim the shared edge instead. */
+.section + .section {
+  padding-top: clamp(1.75rem, 4vw, 3rem);
 }
 
 
