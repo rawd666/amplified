@@ -6,6 +6,7 @@ export interface Category {
   name: string;
   blurb: string;
   position: number;
+  parent_id: number | null;
   product_count?: number;
 }
 

@@ -59,6 +59,14 @@ export default function AdminProducts() {
     [products, filter],
   );
 
+  // Only leaf categories can hold products - one with subcategories is a pure folder.
+  const isLeaf = (c: Category) => !categories.some((o) => o.parent_id === c.id);
+  const leafCategories = useMemo(() => categories.filter(isLeaf), [categories]);
+  const leafParents = useMemo(
+    () => categories.filter((c) => !c.parent_id && categories.some((o) => o.parent_id === c.id)),
+    [categories],
+  );
+
   const edit = (p: Product) =>
     setDraft({
       id: p.id,
@@ -135,8 +143,8 @@ export default function AdminProducts() {
           />
           <button
             className="btn btn--primary"
-            onClick={() => setDraft(blank(categories[0]?.id ?? 0))}
-            disabled={!categories.length}
+            onClick={() => setDraft(blank(leafCategories[0]?.id ?? 0))}
+            disabled={!leafCategories.length}
           >
             New product
           </button>
@@ -228,10 +236,23 @@ export default function AdminProducts() {
                 value={draft.category_id}
                 onChange={(e) => set('category_id', Number(e.target.value))}
               >
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
+                {leafCategories
+                  .filter((c) => !c.parent_id)
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                {leafParents.map((parent) => (
+                  <optgroup key={parent.id} label={parent.name}>
+                    {leafCategories
+                      .filter((c) => c.parent_id === parent.id)
+                      .map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                  </optgroup>
                 ))}
               </select>
             </label>

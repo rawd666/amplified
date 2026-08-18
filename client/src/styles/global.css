@@ -603,9 +603,13 @@ textarea {
 }
 
 /* Back-to-back sections (home page) would otherwise stack a full bottom
-   padding against a full top padding - trim the shared edge instead. */
+   padding against a full top padding - trim both sides of that shared edge. */
 .section + .section {
-  padding-top: clamp(1.75rem, 4vw, 3rem);
+  padding-top: clamp(1rem, 2vw, 1.5rem);
+}
+
+.section:has(+ .section) {
+  padding-bottom: clamp(1rem, 2vw, 1.5rem);
 }
 
 

@@ -21,11 +21,12 @@ db.exec(`
   );
 
   CREATE TABLE IF NOT EXISTS categories (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    slug      TEXT NOT NULL UNIQUE,
-    name      TEXT NOT NULL,
-    blurb     TEXT NOT NULL DEFAULT '',
-    position  INTEGER NOT NULL DEFAULT 0
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug       TEXT NOT NULL UNIQUE,
+    name       TEXT NOT NULL,
+    blurb      TEXT NOT NULL DEFAULT '',
+    position   INTEGER NOT NULL DEFAULT 0,
+    parent_id  INTEGER REFERENCES categories(id) ON DELETE RESTRICT
   );
 
   CREATE TABLE IF NOT EXISTS products (
@@ -103,6 +104,13 @@ db.exec(`
     created_at  TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `);
+
+// The CREATE TABLE above only runs on a fresh database - existing ones need
+// the new column added by hand.
+const categoryCols = db.prepare('PRAGMA table_info(categories)').all() as { name: string }[];
+if (!categoryCols.some((c) => c.name === 'parent_id')) {
+  db.exec('ALTER TABLE categories ADD COLUMN parent_id INTEGER');
+}
 
 export function reference(prefix: string) {
   return `${prefix}-${Math.random().toString(36).slice(2, 7).toUpperCase()}${Date.now()

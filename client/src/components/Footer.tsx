@@ -19,7 +19,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
           <div>
             <h4>Store</h4>
             <ul>
-              {categories.map((c) => (
+              {categories.filter((c) => !c.parent_id).map((c) => (
                 <li key={c.id}>
                   <Link to={`/store/${c.slug}`}>{c.name}</Link>
                 </li>

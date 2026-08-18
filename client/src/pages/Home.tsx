@@ -67,7 +67,7 @@ export default function Home({ categories }: { categories: Category[] }) {
             </div>
           </div>
           <div className="grid">
-            {categories.map((c) => (
+            {categories.filter((c) => !c.parent_id).map((c) => (
               <Link key={c.id} className="card" to={`/store/${c.slug}`}>
                 <div className="card__body">
                   <span className="card__brand">{c.product_count ?? 0} in stock</span>

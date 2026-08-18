@@ -8,9 +8,10 @@ interface Draft {
   slug: string;
   blurb: string;
   position: string;
+  parent_id: string;
 }
 
-const blank: Draft = { name: '', slug: '', blurb: '', position: '0' };
+const blank = (parent_id = ''): Draft => ({ name: '', slug: '', blurb: '', position: '0', parent_id });
 
 export default function AdminCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -23,6 +24,10 @@ export default function AdminCategories() {
   useEffect(() => {
     load().catch((e) => setError((e as Error).message));
   }, []);
+
+  const topLevel = categories.filter((c) => !c.parent_id);
+  const hasChildren = (id: number) => categories.some((c) => c.parent_id === id);
+  const childrenOf = (id: number) => categories.filter((c) => c.parent_id === id);
 
   const save = async (e: FormEvent) => {
     e.preventDefault();
@@ -37,6 +42,7 @@ export default function AdminCategories() {
           slug: draft.slug,
           blurb: draft.blurb,
           position: Number(draft.position) || 0,
+          parent_id: draft.parent_id ? Number(draft.parent_id) : null,
         }),
       });
       setDraft(null);
@@ -54,13 +60,62 @@ export default function AdminCategories() {
       await api(`/categories/${c.id}`, { method: 'DELETE' });
       await load();
     } catch (err) {
-      // The server refuses to delete a category that still holds products.
+      // The server refuses to delete a category that still has subcategories or products.
       setError((err as Error).message);
     }
   };
 
   const set = (key: keyof Draft) => (e: { target: { value: string } }) =>
     setDraft((d) => (d ? { ...d, [key]: e.target.value } : d));
+
+  const edit = (c: Category) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    blurb: c.blurb,
+    position: String(c.position),
+    parent_id: c.parent_id ? String(c.parent_id) : '',
+  });
+
+  // A category can become a parent's child only if that parent isn't itself
+  // a child, and (when editing) the category being edited has no children of
+  // its own - mirrors the two-level depth guard enforced on the server.
+  const parentOptions = (editingId?: number) =>
+    topLevel.filter((c) => c.id !== editingId && !(editingId && hasChildren(editingId)));
+
+  const row = (c: Category, indent: boolean) => (
+    <tr key={c.id}>
+      <td style={indent ? { paddingLeft: '2rem' } : undefined}>
+        {indent && <span className="muted">↳ </span>}
+        <strong>{c.name}</strong>
+      </td>
+      <td>
+        <span className="tag">/{c.slug}</span>
+      </td>
+      <td style={{ maxWidth: 320 }}>
+        <span className="muted" style={{ fontSize: '0.82rem' }}>
+          {c.blurb || '-'}
+        </span>
+      </td>
+      <td>{c.product_count ?? 0}</td>
+      <td>{c.position}</td>
+      <td>
+        <div className="table__actions">
+          {!indent && (
+            <button className="btn btn--ghost btn--sm" onClick={() => setDraft(blank(String(c.id)))}>
+              + Subcategory
+            </button>
+          )}
+          <button className="btn btn--ghost btn--sm" onClick={() => setDraft(edit(c))}>
+            Edit
+          </button>
+          <button className="btn btn--ghost btn--sm" onClick={() => remove(c)}>
+            Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
 
   return (
     <>
@@ -69,7 +124,7 @@ export default function AdminCategories() {
           <p className="stencil">Structure</p>
           <h1 className="headline">Categories</h1>
         </div>
-        <button className="btn btn--primary" onClick={() => setDraft({ ...blank })}>
+        <button className="btn btn--primary" onClick={() => setDraft(blank())}>
           New category
         </button>
       </header>
@@ -88,44 +143,7 @@ export default function AdminCategories() {
           </tr>
         </thead>
         <tbody>
-          {categories.map((c) => (
-            <tr key={c.id}>
-              <td>
-                <strong>{c.name}</strong>
-              </td>
-              <td>
-                <span className="tag">/{c.slug}</span>
-              </td>
-              <td style={{ maxWidth: 320 }}>
-                <span className="muted" style={{ fontSize: '0.82rem' }}>
-                  {c.blurb || '-'}
-                </span>
-              </td>
-              <td>{c.product_count ?? 0}</td>
-              <td>{c.position}</td>
-              <td>
-                <div className="table__actions">
-                  <button
-                    className="btn btn--ghost btn--sm"
-                    onClick={() =>
-                      setDraft({
-                        id: c.id,
-                        name: c.name,
-                        slug: c.slug,
-                        blurb: c.blurb,
-                        position: String(c.position),
-                      })
-                    }
-                  >
-                    Edit
-                  </button>
-                  <button className="btn btn--ghost btn--sm" onClick={() => remove(c)}>
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+          {topLevel.flatMap((c) => [row(c, false), ...childrenOf(c.id).map((child) => row(child, true))])}
         </tbody>
       </table>
 
@@ -150,6 +168,17 @@ export default function AdminCategories() {
             <label className="field">
               <span>Blurb</span>
               <textarea rows={2} value={draft.blurb} onChange={set('blurb')} />
+            </label>
+            <label className="field">
+              <span>Parent category</span>
+              <select value={draft.parent_id} onChange={set('parent_id')}>
+                <option value="">None (top-level)</option>
+                {parentOptions(draft.id).map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
             </label>
             <label className="field">
               <span>Menu position</span>

@@ -52,7 +52,7 @@ export default function Header({ categories }: { categories: Category[] }) {
                   <strong>All Items</strong>
                   <small>The whole floor, newest first</small>
                 </Link>
-                {categories.map((c) => (
+                {categories.filter((c) => !c.parent_id).map((c) => (
                   <Link key={c.id} className="plate__menu-item" to={`/store/${c.slug}`}>
                     <strong>{c.name}</strong>
                     <small>{c.blurb || `${c.product_count ?? 0} in stock`}</small>

@@ -4,6 +4,7 @@ export interface CategoryRow {
   name: string;
   blurb: string;
   position: number;
+  parent_id: number | null;
 }
 
 export interface ProductRow {
