@@ -51,7 +51,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
                 </a>
               </li>
               <li className="muted">Tlaa' Al Ali, Amman</li>
-              <li className="muted">Sat–Thu, 10:00–20:00</li>
+              <li className="muted">Sat–Thu, 12:00–20:00</li>
             </ul>
           </div>
         </div>
