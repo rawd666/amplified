@@ -31,7 +31,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
             <h4>Gear demos</h4>
             <ul>
               <li>
-                <Link to="/gear-demos">Shop-floor clips</Link>
+                <Link to="/gear-demos">Our clips</Link>
               </li>
             </ul>
           </div>

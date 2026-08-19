@@ -38,7 +38,7 @@ export default function StoreMenu({ categories, open, onClose }: Props) {
         <div className="drawer__list">
           <Link className="plate__menu-item" to="/store" onClick={onClose}>
             <strong>All Items</strong>
-            <small>The whole floor, newest first</small>
+            <small>Our full inventory, newest first</small>
           </Link>
 
           {topLevel.map((c) => {

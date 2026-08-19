@@ -50,7 +50,7 @@ export default function Store({ categories }: { categories: Category[] }) {
           <div>
             <p className="stencil">Store</p>
             <h1 className="headline headline--lg">{active ? active.name : 'All Items'}</h1>
-            <p>{active ? active.blurb : 'The whole floor, newest arrivals first.'}</p>
+            <p>{active ? active.blurb : 'Our full inventory, newest arrivals first.'}</p>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export default function Store({ categories }: { categories: Category[] }) {
 
               <input
                 className="filters__search"
-                placeholder="Search the floor"
+                placeholder="Search our inventory"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Search products"

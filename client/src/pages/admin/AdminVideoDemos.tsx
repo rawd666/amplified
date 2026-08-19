@@ -52,7 +52,7 @@ export default function AdminVideoDemos() {
     <>
       <header className="admin__head">
         <div>
-          <p className="stencil">Shop floor</p>
+          <p className="stencil">Our clips</p>
           <h1 className="headline">Gear demos</h1>
         </div>
       </header>
@@ -77,7 +77,7 @@ export default function AdminVideoDemos() {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Recorded on the floor, one take"
+            placeholder="Recorded by us, one take"
           />
         </label>
 

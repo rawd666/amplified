@@ -54,7 +54,7 @@ export default function AdminGallery() {
     <>
       <header className="admin__head">
         <div>
-          <p className="stencil">Shop floor</p>
+          <p className="stencil">Our favorites</p>
           <h1 className="headline">Gallery</h1>
         </div>
       </header>
