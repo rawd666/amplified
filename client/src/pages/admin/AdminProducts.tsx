@@ -136,6 +136,7 @@ export default function AdminProducts() {
         </div>
         <div style={{ display: 'flex', gap: '0.6rem' }}>
           <input
+            className="admin__filter"
             placeholder="Filter…"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}

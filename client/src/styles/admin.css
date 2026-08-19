@@ -6,6 +6,20 @@
   min-height: 100vh;
 }
 
+.admin .field input,
+.admin .field select,
+.admin .field textarea {
+  background: rgba(19, 17, 24, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.admin__filter {
+  background: rgba(19, 17, 24, 0.35);
+  backdrop-filter: blur(6px);
+  border-radius: var(--radius);
+  border-color: var(--chalk);
+}
+
 .admin__rail {
   padding: 1.5rem 1rem;
   background: var(--ink-2);
