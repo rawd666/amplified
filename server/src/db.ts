@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { slugify } from './types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.resolve(__dirname, '../data');
@@ -44,12 +45,19 @@ db.exec(`
     created_at   TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
-  CREATE TABLE IF NOT EXISTS gallery (
+  CREATE TABLE IF NOT EXISTS gallery_categories (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    url       TEXT NOT NULL,
-    caption   TEXT NOT NULL DEFAULT '',
-    tag       TEXT NOT NULL DEFAULT 'shop',
+    slug      TEXT NOT NULL UNIQUE,
+    name      TEXT NOT NULL,
     position  INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS gallery (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    url          TEXT NOT NULL,
+    caption      TEXT NOT NULL DEFAULT '',
+    category_id  INTEGER REFERENCES gallery_categories(id) ON DELETE SET NULL,
+    position     INTEGER NOT NULL DEFAULT 0
   );
 
   CREATE TABLE IF NOT EXISTS demos (
@@ -110,6 +118,29 @@ db.exec(`
 const categoryCols = db.prepare('PRAGMA table_info(categories)').all() as { name: string }[];
 if (!categoryCols.some((c) => c.name === 'parent_id')) {
   db.exec('ALTER TABLE categories ADD COLUMN parent_id INTEGER');
+}
+
+// Gallery photos used to carry a free-text `tag` - fold any existing values
+// into real gallery_categories rows and point category_id at them instead.
+const galleryCols = db.prepare('PRAGMA table_info(gallery)').all() as { name: string }[];
+if (galleryCols.some((c) => c.name === 'tag') && !galleryCols.some((c) => c.name === 'category_id')) {
+  db.exec('ALTER TABLE gallery ADD COLUMN category_id INTEGER');
+
+  const tags = db
+    .prepare("SELECT DISTINCT tag FROM gallery WHERE tag IS NOT NULL AND tag != ''")
+    .all() as { tag: string }[];
+  const insertFolder = db.prepare('INSERT OR IGNORE INTO gallery_categories (slug, name) VALUES (?, ?)');
+  const findFolder = db.prepare('SELECT id FROM gallery_categories WHERE slug = ?');
+  const backfill = db.prepare('UPDATE gallery SET category_id = ? WHERE tag = ?');
+
+  for (const { tag } of tags) {
+    const slug = slugify(tag);
+    insertFolder.run(slug, tag);
+    const folder = findFolder.get(slug) as { id: number };
+    backfill.run(folder.id, tag);
+  }
+
+  db.exec('ALTER TABLE gallery DROP COLUMN tag');
 }
 
 export function reference(prefix: string) {

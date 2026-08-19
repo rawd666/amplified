@@ -31,8 +31,18 @@ export interface GalleryShot {
   id: number;
   url: string;
   caption: string;
-  tag: string;
+  category_id: number | null;
+  category_slug: string | null;
+  category_name: string | null;
   position: number;
+}
+
+export interface GalleryCategory {
+  id: number;
+  slug: string;
+  name: string;
+  position: number;
+  photo_count?: number;
 }
 
 export interface Demo {

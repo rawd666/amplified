@@ -75,12 +75,20 @@ export const galleryRouter = Router();
 const galleryInput = z.object({
   url: z.string().min(1, 'Upload or paste an image first.'),
   caption: z.string().optional(),
-  tag: z.string().optional(),
+  category_id: z.coerce.number().int().positive().nullable().optional(),
   position: z.coerce.number().int().optional(),
 });
 
+const GALLERY_SELECT = `
+  SELECT g.*, gc.slug AS category_slug, gc.name AS category_name
+  FROM gallery g LEFT JOIN gallery_categories gc ON gc.id = g.category_id`;
+
+type JoinedGallery = GalleryRow & { category_slug: string | null; category_name: string | null };
+
 galleryRouter.get('/', (_req, res) => {
-  res.json(db.prepare('SELECT * FROM gallery ORDER BY position, id DESC').all() as GalleryRow[]);
+  res.json(
+    db.prepare(`${GALLERY_SELECT} ORDER BY g.position, g.id DESC`).all() as JoinedGallery[],
+  );
 });
 
 galleryRouter.post('/', requireAdmin, (req, res) => {
@@ -88,9 +96,37 @@ galleryRouter.post('/', requireAdmin, (req, res) => {
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
   const d = parsed.data;
   const info = db
-    .prepare('INSERT INTO gallery (url, caption, tag, position) VALUES (?, ?, ?, ?)')
-    .run(d.url, d.caption ?? '', d.tag ?? 'shop', d.position ?? 0);
-  res.status(201).json(db.prepare('SELECT * FROM gallery WHERE id = ?').get(info.lastInsertRowid));
+    .prepare('INSERT INTO gallery (url, caption, category_id, position) VALUES (?, ?, ?, ?)')
+    .run(d.url, d.caption ?? '', d.category_id ?? null, d.position ?? 0);
+  const row = db.prepare(`${GALLERY_SELECT} WHERE g.id = ?`).get(info.lastInsertRowid) as JoinedGallery;
+  res.status(201).json(row);
+});
+
+galleryRouter.put('/:id', requireAdmin, (req, res) => {
+  const current = db.prepare('SELECT * FROM gallery WHERE id = ?').get(req.params.id) as
+    | GalleryRow
+    | undefined;
+  if (!current) return res.status(404).json({ error: 'That photo no longer exists.' });
+
+  const patch = z
+    .object({
+      caption: z.string().optional(),
+      category_id: z.coerce.number().int().positive().nullable().optional(),
+      url: z.string().optional(),
+    })
+    .safeParse(req.body);
+  if (!patch.success) return res.status(400).json({ error: patch.error.issues[0].message });
+
+  const { caption = current.caption, category_id = current.category_id, url = current.url } =
+    patch.data;
+  db.prepare('UPDATE gallery SET caption = ?, category_id = ?, url = ? WHERE id = ?').run(
+    caption,
+    category_id,
+    url,
+    current.id,
+  );
+  const row = db.prepare(`${GALLERY_SELECT} WHERE g.id = ?`).get(current.id) as JoinedGallery;
+  res.json(row);
 });
 
 galleryRouter.delete('/:id', requireAdmin, (req, res) => {

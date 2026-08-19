@@ -26,7 +26,14 @@ export interface GalleryRow {
   id: number;
   url: string;
   caption: string;
-  tag: string;
+  category_id: number | null;
+  position: number;
+}
+
+export interface GalleryCategoryRow {
+  id: number;
+  slug: string;
+  name: string;
   position: number;
 }
 

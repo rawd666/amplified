@@ -5,7 +5,7 @@ import type { GalleryShot } from '../lib/types';
 
 export default function Gallery() {
   const [shots, setShots] = useState<GalleryShot[]>([]);
-  const [tag, setTag] = useState('all');
+  const [folder, setFolder] = useState('all');
   const [open, setOpen] = useState<GalleryShot | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,8 +16,18 @@ export default function Gallery() {
       .finally(() => setLoading(false));
   }, []);
 
-  const tags = useMemo(() => ['all', ...new Set(shots.map((s) => s.tag).filter(Boolean))], [shots]);
-  const shown = tag === 'all' ? shots : shots.filter((s) => s.tag === tag);
+  // Folders in use, derived straight from the photos rather than a separate
+  // fetch - only ones with at least one photo are worth showing as a filter.
+  const folders = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const s of shots) {
+      if (s.category_slug && s.category_name && !seen.has(s.category_slug)) {
+        seen.set(s.category_slug, s.category_name);
+      }
+    }
+    return [{ slug: 'all', name: 'all' }, ...Array.from(seen, ([slug, name]) => ({ slug, name }))];
+  }, [shots]);
+  const shown = folder === 'all' ? shots : shots.filter((s) => s.category_slug === folder);
 
   return (
     <section className="section">
@@ -33,11 +43,16 @@ export default function Gallery() {
           </div>
         </div>
 
-        {tags.length > 2 && (
+        {folders.length > 2 && (
           <div className="filters">
-            {tags.map((t) => (
-              <button key={t} className="chip" aria-pressed={tag === t} onClick={() => setTag(t)}>
-                {t}
+            {folders.map((f) => (
+              <button
+                key={f.slug}
+                className="chip"
+                aria-pressed={folder === f.slug}
+                onClick={() => setFolder(f.slug)}
+              >
+                {f.name}
               </button>
             ))}
           </div>
