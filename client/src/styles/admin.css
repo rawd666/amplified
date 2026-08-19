@@ -7,10 +7,24 @@
 }
 
 .admin .field input,
-.admin .field select,
 .admin .field textarea {
   background: rgba(19, 17, 24, 0.35);
   backdrop-filter: blur(6px);
+}
+
+/* Every admin dropdown, not just ones wrapped in .field (e.g. the per-row
+   folder picker in the gallery table) - the closed box AND the open option
+   list both need an explicit dark background, since browsers render the
+   option popup with its own native styling that a translucent background
+   doesn't reach, leaving light theme text invisible on a white popup. */
+.admin select {
+  background: var(--ink-2);
+}
+
+.admin select option,
+.admin select optgroup {
+  background: var(--ink-2);
+  color: var(--chalk);
 }
 
 .admin__filter {
