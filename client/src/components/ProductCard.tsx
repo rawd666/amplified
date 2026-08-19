@@ -32,9 +32,6 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="price">{money(product.price)}</span>
 
         <div className="card__foot">
-          <span className="card__stock" data-out={out}>
-            {out ? 'Sold out' : `${product.stock} in stock`}
-          </span>
           <button
             className="btn btn--sm btn--primary"
             disabled={out}
