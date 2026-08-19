@@ -36,9 +36,16 @@ function validateParent(parentId: number | null | undefined, currentId?: number)
 }
 
 categoriesRouter.get('/', (_req, res) => {
+  // A parent's count rolls up its subcategories' products too - a parent
+  // with children never holds products directly, so without this it would
+  // always show 0 regardless of how much stock sits in its subcategories.
   const rows = db
     .prepare(
-      `SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id) AS product_count
+      `SELECT c.*, (
+         SELECT COUNT(*) FROM products p
+         WHERE p.category_id = c.id
+            OR p.category_id IN (SELECT id FROM categories WHERE parent_id = c.id)
+       ) AS product_count
        FROM categories c ORDER BY c.position, c.name`,
     )
     .all() as (CategoryRow & { product_count: number })[];
