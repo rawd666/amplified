@@ -19,6 +19,10 @@ export default function AdminGallery() {
   const [editBusy, setEditBusy] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [openFolderId, setOpenFolderId] = useState<number | null>(null);
+  // Look the open folder up fresh each render instead of caching it, so its
+  // cover/photo_count stay current after actions like "Set cover".
+  const openFolder = folders.find((f) => f.id === openFolderId) ?? null;
 
   const load = async () => {
     const [g, f] = await Promise.all([
@@ -174,12 +178,17 @@ export default function AdminGallery() {
     if (!confirm(`Delete the "${folder.name}" folder?`)) return;
     try {
       await api(`/gallery-categories/${folder.id}`, { method: 'DELETE' });
+      if (openFolderId === folder.id) setOpenFolderId(null);
       await load();
     } catch (err) {
       // The server refuses to delete a folder that still holds photos.
       setError((err as Error).message);
     }
   };
+
+  // The folder's cover, falling back to any photo in it if none was picked yet.
+  const coverFor = (folder: GalleryCategory) =>
+    shots.find((s) => s.id === folder.cover_image_id) ?? shots.find((s) => s.category_id === folder.id);
 
   return (
     <>
@@ -268,69 +277,119 @@ export default function AdminGallery() {
         </form>
       )}
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th />
-            <th>Caption</th>
-            <th>Folder</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {shots.map((s) => {
-            const folder = folders.find((f) => f.id === s.category_id);
-            const isCover = !!folder && folder.cover_image_id === s.id;
-            return (
-              <tr key={s.id}>
-                <td>
-                  <span className="table__thumb-wrap">
+      {!openFolder ? (
+        <table className="table">
+          <thead>
+            <tr>
+              <th />
+              <th>Folder</th>
+              <th>Photos</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {folders.map((f) => {
+              const cover = coverFor(f);
+              return (
+                <tr key={f.id} className="table__row--clickable" onClick={() => setOpenFolderId(f.id)}>
+                  <td>
                     <span className="table__thumb">
-                      <img src={s.url} alt="" style={getCropStyle(s.crop ?? undefined)} />
+                      {cover && <img src={cover.url} alt="" style={getCropStyle(cover.crop ?? undefined)} />}
                     </span>
-                    {isCover && <span className="table__cover-badge">Cover</span>}
-                  </span>
-                </td>
-                <td>{s.caption || '-'}</td>
-                <td>
-                  <select
-                    value={s.category_id ?? ''}
-                    onChange={(e) => setShotFolder(s, Number(e.target.value))}
-                  >
-                    {folders.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.name}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td>
-                  <div className="table__actions">
-                    <button className="btn btn--ghost btn--sm" onClick={() => openEdit(s)}>
-                      Edit
-                    </button>
-                    {!isCover && (
-                      <button className="btn btn--ghost btn--sm" onClick={() => setCover(s)}>
-                        Set cover
-                      </button>
-                    )}
-                    <button className="btn btn--ghost btn--sm" onClick={() => remove(s)}>
-                      Remove
-                    </button>
-                  </div>
+                  </td>
+                  <td>{f.name}</td>
+                  <td>{f.photo_count ?? 0}</td>
+                  <td>
+                    <span className="table__open-arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+            {!folders.length && (
+              <tr>
+                <td colSpan={4}>
+                  <div className="empty">No folders yet.</div>
                 </td>
               </tr>
-            );
-          })}
-          {!shots.length && (
-            <tr>
-              <td colSpan={4}>
-                <div className="empty">No photos yet.</div>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      ) : (
+        <>
+          <button className="btn btn--ghost btn--sm" style={{ marginBottom: '1rem' }} onClick={() => setOpenFolderId(null)}>
+            ← All folders
+          </button>
+          <h2 className="headline" style={{ marginBottom: '1rem' }}>
+            {openFolder.name}
+          </h2>
+          <table className="table">
+            <thead>
+              <tr>
+                <th />
+                <th>Caption</th>
+                <th>Folder</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {shots
+                .filter((s) => s.category_id === openFolder.id)
+                .map((s) => {
+                  const isCover = openFolder.cover_image_id === s.id;
+                  return (
+                    <tr key={s.id}>
+                      <td>
+                        <span className="table__thumb-wrap">
+                          <span className="table__thumb">
+                            <img src={s.url} alt="" style={getCropStyle(s.crop ?? undefined)} />
+                          </span>
+                          {isCover && <span className="table__cover-badge">Cover</span>}
+                        </span>
+                      </td>
+                      <td>{s.caption || '-'}</td>
+                      <td>
+                        <select
+                          value={s.category_id ?? ''}
+                          onChange={(e) => setShotFolder(s, Number(e.target.value))}
+                        >
+                          {folders.map((f) => (
+                            <option key={f.id} value={f.id}>
+                              {f.name}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <div className="table__actions">
+                          <button className="btn btn--ghost btn--sm" onClick={() => openEdit(s)}>
+                            Edit
+                          </button>
+                          {!isCover && (
+                            <button className="btn btn--ghost btn--sm" onClick={() => setCover(s)}>
+                              Set cover
+                            </button>
+                          )}
+                          <button className="btn btn--ghost btn--sm" onClick={() => remove(s)}>
+                            Remove
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              {!shots.some((s) => s.category_id === openFolder.id) && (
+                <tr>
+                  <td colSpan={4}>
+                    <div className="empty">No photos in this folder yet.</div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
 
       {editing && (
         <div className="modal" role="dialog" aria-modal="true">
