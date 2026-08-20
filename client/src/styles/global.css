@@ -818,11 +818,6 @@ textarea {
   padding-bottom: 0;
 }
 
-.specplate li::before {
-  content: '•';
-  color: var(--violet-hot);
-}
-
 .detail__buy {
   display: flex;
   gap: 0.75rem;
