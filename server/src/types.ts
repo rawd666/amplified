@@ -28,6 +28,7 @@ export interface GalleryRow {
   caption: string;
   category_id: number | null;
   position: number;
+  crop: string | null;
 }
 
 export interface GalleryCategoryRow {
@@ -35,6 +36,7 @@ export interface GalleryCategoryRow {
   slug: string;
   name: string;
   position: number;
+  cover_image_id: number | null;
 }
 
 export interface DemoRow {

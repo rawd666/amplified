@@ -144,6 +144,27 @@
   overflow: hidden;
 }
 
+.table__thumb-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.table__cover-badge {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  padding: 1px 0;
+  border-radius: 2px;
+  background: var(--violet);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 .table__actions {
   display: flex;
   gap: 0.4rem;

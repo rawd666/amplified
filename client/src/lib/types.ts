@@ -1,4 +1,4 @@
-import type { ProductImage } from './crop';
+import type { ImageCrop, ProductImage } from './crop';
 
 export interface Category {
   id: number;
@@ -35,6 +35,7 @@ export interface GalleryShot {
   category_slug: string | null;
   category_name: string | null;
   position: number;
+  crop?: ImageCrop | null;
 }
 
 export interface GalleryCategory {
@@ -43,6 +44,8 @@ export interface GalleryCategory {
   name: string;
   position: number;
   photo_count?: number;
+  cover_image_id: number | null;
+  cover_image_url?: string | null;
 }
 
 export interface Demo {

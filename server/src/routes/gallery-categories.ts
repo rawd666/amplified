@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAdmin } from '../auth.js';
-import { slugify, type GalleryCategoryRow } from '../types.js';
+import { slugify, type GalleryCategoryRow, type GalleryRow } from '../types.js';
 
 export const galleryCategoriesRouter = Router();
 
@@ -12,13 +12,17 @@ const folderInput = z.object({
   position: z.number().int().optional(),
 });
 
+const CATEGORY_SELECT = `
+  SELECT c.*, (SELECT COUNT(*) FROM gallery g WHERE g.category_id = c.id) AS photo_count,
+    cov.url AS cover_image_url
+  FROM gallery_categories c LEFT JOIN gallery cov ON cov.id = c.cover_image_id`;
+
+type JoinedCategory = GalleryCategoryRow & { photo_count: number; cover_image_url: string | null };
+
 galleryCategoriesRouter.get('/', (_req, res) => {
   const rows = db
-    .prepare(
-      `SELECT c.*, (SELECT COUNT(*) FROM gallery g WHERE g.category_id = c.id) AS photo_count
-       FROM gallery_categories c ORDER BY c.position, c.name`,
-    )
-    .all() as (GalleryCategoryRow & { photo_count: number })[];
+    .prepare(`${CATEGORY_SELECT} ORDER BY c.position, c.name`)
+    .all() as JoinedCategory[];
   res.json(rows);
 });
 
@@ -59,6 +63,27 @@ galleryCategoriesRouter.put('/:id', requireAdmin, (req, res) => {
     current.id,
   );
   res.json(db.prepare('SELECT * FROM gallery_categories WHERE id = ?').get(current.id));
+});
+
+galleryCategoriesRouter.put('/:id/cover', requireAdmin, (req, res) => {
+  const folder = db.prepare('SELECT * FROM gallery_categories WHERE id = ?').get(req.params.id) as
+    | GalleryCategoryRow
+    | undefined;
+  if (!folder) return res.status(404).json({ error: 'That folder no longer exists.' });
+
+  const parsed = z.object({ shot_id: z.coerce.number().int().positive() }).safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
+
+  const shot = db.prepare('SELECT * FROM gallery WHERE id = ?').get(parsed.data.shot_id) as
+    | GalleryRow
+    | undefined;
+  if (!shot || shot.category_id !== folder.id) {
+    return res.status(400).json({ error: 'That photo is not in this folder.' });
+  }
+
+  db.prepare('UPDATE gallery_categories SET cover_image_id = ? WHERE id = ?').run(shot.id, folder.id);
+  const row = db.prepare(`${CATEGORY_SELECT} WHERE c.id = ?`).get(folder.id) as JoinedCategory;
+  res.json(row);
 });
 
 galleryCategoriesRouter.delete('/:id', requireAdmin, (req, res) => {

@@ -143,6 +143,35 @@ if (galleryCols.some((c) => c.name === 'tag') && !galleryCols.some((c) => c.name
   db.exec('ALTER TABLE gallery DROP COLUMN tag');
 }
 
+// Gallery photos can now be panned/zoomed into a 3:2 crop, same as products.
+if (!galleryCols.some((c) => c.name === 'crop')) {
+  db.exec('ALTER TABLE gallery ADD COLUMN crop TEXT');
+}
+
+// Folders can have an admin-picked cover photo.
+const galleryCategoryCols = db.prepare('PRAGMA table_info(gallery_categories)').all() as {
+  name: string;
+}[];
+if (!galleryCategoryCols.some((c) => c.name === 'cover_image_id')) {
+  db.exec('ALTER TABLE gallery_categories ADD COLUMN cover_image_id INTEGER');
+}
+
+// Every gallery photo must belong to a folder now - fold any orphaned
+// (no category) rows into a catch-all "Uncategorized" folder.
+const orphanCount = (
+  db.prepare('SELECT COUNT(*) AS n FROM gallery WHERE category_id IS NULL').get() as { n: number }
+).n;
+if (orphanCount > 0) {
+  db.prepare('INSERT OR IGNORE INTO gallery_categories (slug, name) VALUES (?, ?)').run(
+    'uncategorized',
+    'Uncategorized',
+  );
+  const folder = db
+    .prepare('SELECT id FROM gallery_categories WHERE slug = ?')
+    .get('uncategorized') as { id: number };
+  db.prepare('UPDATE gallery SET category_id = ? WHERE category_id IS NULL').run(folder.id);
+}
+
 export function reference(prefix: string) {
   return `${prefix}-${Math.random().toString(36).slice(2, 7).toUpperCase()}${Date.now()
     .toString()

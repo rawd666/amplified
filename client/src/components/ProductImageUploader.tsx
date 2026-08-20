@@ -7,6 +7,7 @@ interface Props {
   images: ProductImage[];
   onChange: (images: ProductImage[]) => void;
   label?: string;
+  multiple?: boolean;
 }
 
 const ASPECT = 2 / 3;
@@ -14,7 +15,7 @@ const ASPECT = 2 / 3;
 /** Drop or pick files, push them to /api/uploads, then let the admin pan/zoom
  *  to frame each shot within a 3:2 vertical crop. The original file is never
  *  touched - only the chosen framing (as percentages) is saved alongside the URL. */
-export default function ProductImageUploader({ images, onChange, label }: Props) {
+export default function ProductImageUploader({ images, onChange, label, multiple = true }: Props) {
   const input = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -31,7 +32,8 @@ export default function ProductImageUploader({ images, onChange, label }: Props)
     setBusy(true);
     try {
       const urls = await uploadImages(files);
-      onChange([...images, ...urls.map((url) => ({ url }))]);
+      const next = urls.map((url) => ({ url }));
+      onChange(multiple ? [...images, ...next] : next.slice(0, 1));
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -100,7 +102,7 @@ export default function ProductImageUploader({ images, onChange, label }: Props)
         ref={input}
         type="file"
         accept="image/*"
-        multiple
+        multiple={multiple}
         hidden
         onChange={(e) => {
           if (e.target.files) void take(e.target.files);

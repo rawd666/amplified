@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { db } from '../db.js';
 import { requireAdmin } from '../auth.js';
-import type { GalleryRow } from '../types.js';
+import { safeParse, type GalleryRow, type ImageCrop } from '../types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const uploadsDir = path.resolve(__dirname, '../../uploads');
@@ -72,11 +72,19 @@ uploadsRouter.delete('/', requireAdmin, (req, res) => {
 
 export const galleryRouter = Router();
 
+const cropSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  width: z.number(),
+  height: z.number(),
+});
+
 const galleryInput = z.object({
   url: z.string().min(1, 'Upload or paste an image first.'),
   caption: z.string().optional(),
-  category_id: z.coerce.number().int().positive().nullable().optional(),
+  category_id: z.coerce.number().int().positive('Choose a folder.'),
   position: z.coerce.number().int().optional(),
+  crop: cropSchema.optional(),
 });
 
 const GALLERY_SELECT = `
@@ -85,10 +93,16 @@ const GALLERY_SELECT = `
 
 type JoinedGallery = GalleryRow & { category_slug: string | null; category_name: string | null };
 
+/** The stored crop is JSON text (or null) - hand back a real object to clients. */
+function withCrop<T extends { crop: string | null }>(row: T) {
+  return { ...row, crop: row.crop ? safeParse<ImageCrop | null>(row.crop, null) : null };
+}
+
 galleryRouter.get('/', (_req, res) => {
-  res.json(
-    db.prepare(`${GALLERY_SELECT} ORDER BY g.position, g.id DESC`).all() as JoinedGallery[],
-  );
+  const rows = db
+    .prepare(`${GALLERY_SELECT} ORDER BY g.position, g.id DESC`)
+    .all() as JoinedGallery[];
+  res.json(rows.map(withCrop));
 });
 
 galleryRouter.post('/', requireAdmin, (req, res) => {
@@ -96,10 +110,10 @@ galleryRouter.post('/', requireAdmin, (req, res) => {
   if (!parsed.success) return res.status(400).json({ error: parsed.error.issues[0].message });
   const d = parsed.data;
   const info = db
-    .prepare('INSERT INTO gallery (url, caption, category_id, position) VALUES (?, ?, ?, ?)')
-    .run(d.url, d.caption ?? '', d.category_id ?? null, d.position ?? 0);
+    .prepare('INSERT INTO gallery (url, caption, category_id, position, crop) VALUES (?, ?, ?, ?, ?)')
+    .run(d.url, d.caption ?? '', d.category_id, d.position ?? 0, d.crop ? JSON.stringify(d.crop) : null);
   const row = db.prepare(`${GALLERY_SELECT} WHERE g.id = ?`).get(info.lastInsertRowid) as JoinedGallery;
-  res.status(201).json(row);
+  res.status(201).json(withCrop(row));
 });
 
 galleryRouter.put('/:id', requireAdmin, (req, res) => {
@@ -111,25 +125,38 @@ galleryRouter.put('/:id', requireAdmin, (req, res) => {
   const patch = z
     .object({
       caption: z.string().optional(),
-      category_id: z.coerce.number().int().positive().nullable().optional(),
+      category_id: z.coerce.number().int().positive().optional(),
       url: z.string().optional(),
+      crop: cropSchema.optional(),
     })
     .safeParse(req.body);
   if (!patch.success) return res.status(400).json({ error: patch.error.issues[0].message });
 
   const { caption = current.caption, category_id = current.category_id, url = current.url } =
     patch.data;
-  db.prepare('UPDATE gallery SET caption = ?, category_id = ?, url = ? WHERE id = ?').run(
+  const crop = patch.data.crop !== undefined ? JSON.stringify(patch.data.crop) : current.crop;
+
+  if (category_id !== current.category_id) {
+    db.prepare('UPDATE gallery_categories SET cover_image_id = NULL WHERE cover_image_id = ?').run(
+      current.id,
+    );
+  }
+
+  db.prepare('UPDATE gallery SET caption = ?, category_id = ?, url = ?, crop = ? WHERE id = ?').run(
     caption,
     category_id,
     url,
+    crop,
     current.id,
   );
   const row = db.prepare(`${GALLERY_SELECT} WHERE g.id = ?`).get(current.id) as JoinedGallery;
-  res.json(row);
+  res.json(withCrop(row));
 });
 
 galleryRouter.delete('/:id', requireAdmin, (req, res) => {
+  db.prepare('UPDATE gallery_categories SET cover_image_id = NULL WHERE cover_image_id = ?').run(
+    req.params.id,
+  );
   db.prepare('DELETE FROM gallery WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });

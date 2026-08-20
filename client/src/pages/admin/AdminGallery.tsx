@@ -1,12 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import ImageUploader from '../../components/ImageUploader';
+import ProductImageUploader from '../../components/ProductImageUploader';
+import { getCropStyle, type ProductImage } from '../../lib/crop';
 import { api } from '../../lib/api';
 import type { GalleryCategory, GalleryShot } from '../../lib/types';
 
 export default function AdminGallery() {
   const [shots, setShots] = useState<GalleryShot[]>([]);
   const [folders, setFolders] = useState<GalleryCategory[]>([]);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<ProductImage[]>([]);
   const [caption, setCaption] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
@@ -14,7 +15,7 @@ export default function AdminGallery() {
   const [editingName, setEditingName] = useState('');
   const [editing, setEditing] = useState<GalleryShot | null>(null);
   const [editCaption, setEditCaption] = useState('');
-  const [editImage, setEditImage] = useState<string[]>([]);
+  const [editImage, setEditImage] = useState<ProductImage[]>([]);
   const [editBusy, setEditBusy] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -32,20 +33,31 @@ export default function AdminGallery() {
     load().catch((e) => setError((e as Error).message));
   }, []);
 
+  // Every photo needs a folder now - default the add form to the first one
+  // that exists, and keep it in sync if the current pick gets deleted.
+  useEffect(() => {
+    if (!folders.length) return setCategoryId('');
+    if (!folders.some((f) => String(f.id) === categoryId)) {
+      setCategoryId(String(folders[0].id));
+    }
+  }, [folders]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // One upload can carry several photos; each becomes its own gallery row.
   const add = async (e: FormEvent) => {
     e.preventDefault();
     if (!images.length) return setError('Upload at least one photo.');
+    if (!categoryId) return setError('Choose a folder.');
     setError('');
     setBusy(true);
     try {
-      for (const url of images) {
+      for (const img of images) {
         await api('/gallery', {
           method: 'POST',
           body: JSON.stringify({
-            url,
+            url: img.url,
+            crop: img.crop ?? null,
             caption,
-            category_id: categoryId ? Number(categoryId) : null,
+            category_id: Number(categoryId),
             position: 0,
           }),
         });
@@ -70,7 +82,7 @@ export default function AdminGallery() {
     }
   };
 
-  const setShotFolder = async (shot: GalleryShot, folderId: number | null) => {
+  const setShotFolder = async (shot: GalleryShot, folderId: number) => {
     setShots((prev) =>
       prev.map((s) => (s.id === shot.id ? { ...s, category_id: folderId } : s)),
     );
@@ -83,6 +95,19 @@ export default function AdminGallery() {
     } catch (err) {
       setError((err as Error).message);
       await load();
+    }
+  };
+
+  const setCover = async (shot: GalleryShot) => {
+    if (!shot.category_id) return;
+    try {
+      await api(`/gallery-categories/${shot.category_id}/cover`, {
+        method: 'PUT',
+        body: JSON.stringify({ shot_id: shot.id }),
+      });
+      await load();
+    } catch (err) {
+      setError((err as Error).message);
     }
   };
 
@@ -118,7 +143,7 @@ export default function AdminGallery() {
   const openEdit = (shot: GalleryShot) => {
     setEditing(shot);
     setEditCaption(shot.caption);
-    setEditImage([shot.url]);
+    setEditImage([{ url: shot.url, crop: shot.crop ?? undefined }]);
   };
 
   const saveEdit = async (e: FormEvent) => {
@@ -130,7 +155,11 @@ export default function AdminGallery() {
     try {
       await api(`/gallery/${editing.id}`, {
         method: 'PUT',
-        body: JSON.stringify({ caption: editCaption, url: editImage[0] }),
+        body: JSON.stringify({
+          caption: editCaption,
+          url: editImage[0].url,
+          crop: editImage[0].crop ?? null,
+        }),
       });
       setEditing(null);
       await load();
@@ -205,34 +234,39 @@ export default function AdminGallery() {
         </form>
       </div>
 
-      <form className="modal__card" style={{ width: '100%', marginBottom: '2rem' }} onSubmit={add}>
-        <ImageUploader images={images} onChange={setImages} label="New photos" />
+      {!folders.length ? (
+        <div className="empty" style={{ marginBottom: '2rem' }}>
+          Create a folder above before adding photos - every photo needs one.
+        </div>
+      ) : (
+        <form className="modal__card" style={{ width: '100%', marginBottom: '2rem' }} onSubmit={add}>
+          <ProductImageUploader images={images} onChange={setImages} label="New photos" />
 
-        <label className="field">
-          <span>Caption</span>
-          <input
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            placeholder="Sunday jam, back room"
-          />
-        </label>
+          <label className="field">
+            <span>Caption</span>
+            <input
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="Sunday jam, back room"
+            />
+          </label>
 
-        <label className="field">
-          <span>Folder</span>
-          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            <option value="">No folder</option>
-            {folders.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.name}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label className="field">
+            <span>Folder</span>
+            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+              {folders.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-        <button className="btn btn--primary" disabled={busy || !images.length}>
-          {busy ? 'Adding…' : `Add ${images.length || ''} photo${images.length === 1 ? '' : 's'}`}
-        </button>
-      </form>
+          <button className="btn btn--primary" disabled={busy || !images.length}>
+            {busy ? 'Adding…' : `Add ${images.length || ''} photo${images.length === 1 ? '' : 's'}`}
+          </button>
+        </form>
+      )}
 
       <table className="table">
         <thead>
@@ -244,39 +278,50 @@ export default function AdminGallery() {
           </tr>
         </thead>
         <tbody>
-          {shots.map((s) => (
-            <tr key={s.id}>
-              <td>
-                <img className="table__thumb" src={s.url} alt="" />
-              </td>
-              <td>{s.caption || '-'}</td>
-              <td>
-                <select
-                  value={s.category_id ?? ''}
-                  onChange={(e) =>
-                    setShotFolder(s, e.target.value ? Number(e.target.value) : null)
-                  }
-                >
-                  <option value="">No folder</option>
-                  {folders.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.name}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                <div className="table__actions">
-                  <button className="btn btn--ghost btn--sm" onClick={() => openEdit(s)}>
-                    Edit
-                  </button>
-                  <button className="btn btn--ghost btn--sm" onClick={() => remove(s)}>
-                    Remove
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+          {shots.map((s) => {
+            const folder = folders.find((f) => f.id === s.category_id);
+            const isCover = !!folder && folder.cover_image_id === s.id;
+            return (
+              <tr key={s.id}>
+                <td>
+                  <span className="table__thumb-wrap">
+                    <span className="table__thumb">
+                      <img src={s.url} alt="" style={getCropStyle(s.crop ?? undefined)} />
+                    </span>
+                    {isCover && <span className="table__cover-badge">Cover</span>}
+                  </span>
+                </td>
+                <td>{s.caption || '-'}</td>
+                <td>
+                  <select
+                    value={s.category_id ?? ''}
+                    onChange={(e) => setShotFolder(s, Number(e.target.value))}
+                  >
+                    {folders.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td>
+                  <div className="table__actions">
+                    <button className="btn btn--ghost btn--sm" onClick={() => openEdit(s)}>
+                      Edit
+                    </button>
+                    {!isCover && (
+                      <button className="btn btn--ghost btn--sm" onClick={() => setCover(s)}>
+                        Set cover
+                      </button>
+                    )}
+                    <button className="btn btn--ghost btn--sm" onClick={() => remove(s)}>
+                      Remove
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
           {!shots.length && (
             <tr>
               <td colSpan={4}>
@@ -297,11 +342,11 @@ export default function AdminGallery() {
               </button>
             </div>
 
-            <ImageUploader
+            <ProductImageUploader
               images={editImage}
               onChange={setEditImage}
               multiple={false}
-              label="Photo - drop a new one to replace it"
+              label="Photo - drop a new one to replace it, or reposition the current one"
             />
 
             <label className="field">
