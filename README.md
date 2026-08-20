@@ -1,7 +1,6 @@
 # Amplified - guitars, amps, pedals, accessories
 
-A full ecommerce site for a guitar shop, styled like the faceplate of a vintage amp: brushed grey
-panels, silkscreened labels, one glowing purple jewel lamp.
+A full ecommerce site for a music store in Amman specialized in guitars & accessories, complete with an admin login and much more!
 
 **Live:** [amplified-jo.com](https://amplified-jo.com)
 
