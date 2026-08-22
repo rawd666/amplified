@@ -58,7 +58,7 @@ export default function Home({ categories }: { categories: Category[] }) {
         </div>
       </section>
 
-      <section className="section section--edge">
+{/*      <section className="section section--edge">
         <div className="shell">
           <div className="section__head">
             <div>
@@ -83,7 +83,7 @@ export default function Home({ categories }: { categories: Category[] }) {
             ))}
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {featured.length > 0 && (
         <section className="section section--edge">
