@@ -5,9 +5,9 @@ import ReviewForm from '../components/ReviewForm';
 import StarRating from '../components/StarRating';
 import { api, INSTAGRAM_DM } from '../lib/api';
 import { shortDate } from '../lib/format';
-import type { Category, Product, Review } from '../lib/types';
+import type { Product, Review } from '../lib/types';
 
-export default function Home({ categories }: { categories: Category[] }) {
+export default function Home() {
   const [featured, setFeatured] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewTab, setReviewTab] = useState<'reviews' | 'write'>('reviews');

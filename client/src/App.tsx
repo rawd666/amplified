@@ -71,7 +71,7 @@ export default function App() {
       <CartDrawer />
       <main>
         <Routes>
-          <Route path="/" element={<Home categories={categories} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/store" element={<Store categories={categories} />} />
           <Route path="/store/:category" element={<Store categories={categories} />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
