@@ -490,10 +490,6 @@ textarea {
 .hero__guitar-inner {
   position: relative;
   top: 2vw;
-  /* Small negative nudge past the shell's own inner edge, into the
-     gutter. Uses margin (not padding) because padding can't go
-     negative - it just clamps to 0, which is what capped this before. */
-  margin-right: -2rem;
   width: 70vw;
   max-width: 460px;
   aspect-ratio: 3 / 2;
@@ -512,7 +508,11 @@ textarea {
   display: block;
   width: 100%;
   height: 100%;
-  transform: rotate(-8deg);
+  /* translateX is the small rightward nudge into the gutter - kept on each
+     image (alongside the rotation) rather than on .hero__guitar-inner above,
+     since a transform on that shared wrapper would merge both split layers
+     into one painted unit and break the behind/in-front z-index split. */
+  transform: translateX(3%) rotate(-8deg);
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
 }
 
