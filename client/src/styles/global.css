@@ -437,7 +437,8 @@ textarea {
 
 .hero {
   position: relative;
-  padding: clamp(3rem, 8vw, 6rem) 0;
+  padding-top: clamp(3rem, 8vw, 6rem);
+  padding-bottom: clamp(1.5rem, 4vw, 3rem);
   min-height: clamp(480px, 56vw, 640px);
   overflow: hidden;
 }
