@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db, reference } from '../db.js';
 import { requireAdmin } from '../auth.js';
 import { safeParse } from '../types.js';
-import { sendOrderNotification } from '../mailer.js';
+import { sendBookingNotification, sendOrderNotification } from '../mailer.js';
 
 /* ---------- orders: cash on delivery only ---------- */
 
@@ -127,6 +127,17 @@ bookingsRouter.post('/', (req, res) => {
     `INSERT INTO bookings (reference, customer, phone, reason, interest, slot_date, slot_time, notes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(ref, d.customer, d.phone, d.reason, d.interest ?? '', d.slot_date, d.slot_time, d.notes ?? '');
+
+  void sendBookingNotification({
+    reference: ref,
+    customer: d.customer,
+    phone: d.phone,
+    reason: d.reason,
+    interest: d.interest ?? '',
+    slot_date: d.slot_date,
+    slot_time: d.slot_time,
+    notes: d.notes ?? '',
+  });
 
   res.status(201).json({ reference: ref });
 });

@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 
-const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, ORDER_NOTIFY_EMAIL } = process.env;
+const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM, ORDER_NOTIFY_EMAIL, BOOKING_NOTIFY_EMAIL } =
+  process.env;
 
 const transporter =
   SMTP_HOST && SMTP_USER && SMTP_PASS
@@ -63,5 +64,46 @@ export async function sendOrderNotification(order: OrderForEmail) {
     });
   } catch (err) {
     console.error('Order notification email failed:', err);
+  }
+}
+
+interface BookingForEmail {
+  reference: string;
+  customer: string;
+  phone: string;
+  reason: string;
+  interest: string;
+  slot_date: string;
+  slot_time: string;
+  notes: string;
+}
+
+/** Fire-and-forget: a missing/broken mail server should never block a booking from saving. */
+export async function sendBookingNotification(booking: BookingForEmail) {
+  const to = BOOKING_NOTIFY_EMAIL || ORDER_NOTIFY_EMAIL;
+  if (!transporter || !to) return;
+
+  const text = [
+    `New booking ${booking.reference}`,
+    '',
+    `Customer: ${booking.customer}`,
+    `Phone: ${booking.phone}`,
+    `Reason: ${booking.reason}`,
+    booking.interest && `Interested in: ${booking.interest}`,
+    `When: ${booking.slot_date} ${booking.slot_time}`,
+    booking.notes && `Notes: ${booking.notes}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  try {
+    await transporter.sendMail({
+      from: SMTP_FROM ?? SMTP_USER,
+      to,
+      subject: `New booking ${booking.reference} - ${booking.customer}`,
+      text,
+    });
+  } catch (err) {
+    console.error('Booking notification email failed:', err);
   }
 }
