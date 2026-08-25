@@ -483,13 +483,17 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: calc(var(--gutter) - 8rem);
+  padding-right: 0;
   pointer-events: none;
 }
 
 .hero__guitar-inner {
   position: relative;
   top: 2vw;
+  /* Small negative nudge past the shell's own inner edge, into the
+     gutter. Uses margin (not padding) because padding can't go
+     negative - it just clamps to 0, which is what capped this before. */
+  margin-right: -2rem;
   width: 70vw;
   max-width: 460px;
   aspect-ratio: 3 / 2;
