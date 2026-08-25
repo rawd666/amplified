@@ -33,6 +33,16 @@ export default function AdminOrders() {
     }
   };
 
+  const remove = async (kind: Tab, id: number) => {
+    if (!confirm(`Delete this ${kind === 'orders' ? 'order' : 'booking'}? This cannot be undone.`)) return;
+    try {
+      await api(`/${kind}/${id}`, { method: 'DELETE' });
+      await load();
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
   return (
     <>
       <header className="admin__head">
@@ -67,6 +77,7 @@ export default function AdminOrders() {
               <th>Fulfilment</th>
               <th>Placed</th>
               <th>Status</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -116,11 +127,16 @@ export default function AdminOrders() {
                     ))}
                   </select>
                 </td>
+                <td>
+                  <button className="btn btn--ghost btn--sm" onClick={() => remove('orders', o.id)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
             {!orders.length && (
               <tr>
-                <td colSpan={7}>
+                <td colSpan={8}>
                   <div className="empty">No orders yet.</div>
                 </td>
               </tr>
@@ -137,6 +153,7 @@ export default function AdminOrders() {
               <th>Wants to play</th>
               <th>Slot</th>
               <th>Status</th>
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -175,11 +192,16 @@ export default function AdminOrders() {
                     ))}
                   </select>
                 </td>
+                <td>
+                  <button className="btn btn--ghost btn--sm" onClick={() => remove('bookings', b.id)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
             {!bookings.length && (
               <tr>
-                <td colSpan={6}>
+                <td colSpan={7}>
                   <div className="empty">No bookings yet.</div>
                 </td>
               </tr>

@@ -98,6 +98,11 @@ ordersRouter.patch('/:id', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
+ordersRouter.delete('/:id', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM orders WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
 /* ---------- bookings: try before you buy, in store ---------- */
 
 export const bookingsRouter = Router();
@@ -158,5 +163,10 @@ bookingsRouter.patch('/:id', requireAdmin, (req, res) => {
   const status = z.enum(['pending', 'confirmed', 'done', 'cancelled']).safeParse(req.body?.status);
   if (!status.success) return res.status(400).json({ error: 'Unknown status.' });
   db.prepare('UPDATE bookings SET status = ? WHERE id = ?').run(status.data, req.params.id);
+  res.json({ ok: true });
+});
+
+bookingsRouter.delete('/:id', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM bookings WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
