@@ -483,13 +483,13 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: calc(var(--gutter) - 3rem);
+  padding-right: calc(var(--gutter) - 8rem);
   pointer-events: none;
 }
 
 .hero__guitar-inner {
   position: relative;
-  top: -4vw;
+  top: 2vw;
   width: 70vw;
   max-width: 460px;
   aspect-ratio: 3 / 2;
@@ -529,33 +529,13 @@ textarea {
   }
 }
 
-/* Below this the absolute-overlay layout (guitar vertically centered
-   behind/beside the text, both sharing the same box) breaks down: wrapped
-   title/lede text can grow taller than .hero's min-height, so the
-   "centered" guitar drifts away from the title and overlaps the copy.
-   Take it out of the overlay and stack it in normal flow above the text
-   instead, so the section just grows with its content and nothing can
-   ever overlap. */
-@media (max-width: 900px) {
-  .hero {
-    min-height: 0;
-  }
-
-  .hero__guitar {
-    position: relative;
-    inset: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-right: 0;
-    margin-bottom: 2rem;
-  }
-
-  .hero__guitar-inner {
-    position: relative;
-    top: 0;
-    width: min(80vw, 360px);
-  }
+/* .hero__guitar's inset:0 sizes it to its nearest positioned ancestor -
+   .hero__head (stencil + title only), not the whole hero. That keeps the
+   guitar's position pinned to the title at every screen size: the lede
+   and CTA row can wrap onto as many lines as they need below without ever
+   dragging the "centered" guitar down away from the title with them. */
+.hero__head {
+  position: relative;
 }
 
 /* the control panel itself */

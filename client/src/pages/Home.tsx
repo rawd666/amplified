@@ -28,19 +28,21 @@ export default function Home() {
     <>
       <section className="hero">
         <div className="shell">
-          <div className="hero__guitar" aria-hidden="true">
-            <div className="hero__guitar-inner">
-              <img className="hero__guitar-img hero__guitar-img--back" src="/guitar.svg" alt="" />
-              <img className="hero__guitar-img hero__guitar-img--front" src="/guitar.svg" alt="" />
+          <div className="hero__head">
+            <div className="hero__guitar" aria-hidden="true">
+              <div className="hero__guitar-inner">
+                <img className="hero__guitar-img hero__guitar-img--back" src="/guitar.svg" alt="" />
+                <img className="hero__guitar-img hero__guitar-img--front" src="/guitar.svg" alt="" />
+              </div>
             </div>
-          </div>
 
-          <p className="stencil stencil--violet">Amman · Est. 2022</p>
-          <h1 className="headline headline--xl hero__title">
-            Gear that
-            <span>earns its</span>
-            volume
-          </h1>
+            <p className="stencil stencil--violet">Amman · Est. 2022</p>
+            <h1 className="headline headline--xl hero__title">
+              Gear that
+              <span>earns its</span>
+              volume
+            </h1>
+          </div>
           <p className="hero__lede">
             Guitars, amps, pedals and the small parts that keep a band running.
           </p>
