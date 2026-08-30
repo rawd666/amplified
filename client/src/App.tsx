@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import AdminRoute from './components/AdminRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 import Home from './pages/Home';
 import Store from './pages/Store';
@@ -43,30 +44,34 @@ export default function App() {
 
   if (isAdmin) {
     return (
-      <Routes>
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminLayout />
-            </AdminRoute>
-          }
-        >
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="categories" element={<AdminCategories />} />
-          <Route path="gallery" element={<AdminGallery />} />
-          <Route path="demos" element={<AdminVideoDemos />} />
-          <Route path="reviews" element={<AdminReviews />} />
-          <Route path="orders" element={<AdminOrders />} />
-        </Route>
-        <Route path="/admin/*" element={<AdminLogin />} />
-      </Routes>
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="categories" element={<AdminCategories />} />
+            <Route path="gallery" element={<AdminGallery />} />
+            <Route path="demos" element={<AdminVideoDemos />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="orders" element={<AdminOrders />} />
+          </Route>
+          <Route path="/admin/*" element={<AdminLogin />} />
+        </Routes>
+      </>
     );
   }
 
   return (
     <>
+      <ScrollToTop />
       <Header categories={categories} />
       <CartDrawer />
       <main>
