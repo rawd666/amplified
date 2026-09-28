@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import ProductImageUploader from '../../components/ProductImageUploader';
 import { getCropStyle, type ProductImage } from '../../lib/crop';
-import { api } from '../../lib/api';
+import { api, download } from '../../lib/api';
 import { money } from '../../lib/format';
 import type { Category, Product } from '../../lib/types';
 
@@ -36,6 +36,7 @@ export default function AdminProducts() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [filter, setFilter] = useState('');
 
   const load = async () => {
@@ -124,6 +125,18 @@ export default function AdminProducts() {
     }
   };
 
+  const exportInventory = async () => {
+    setError('');
+    setExporting(true);
+    try {
+      await download('/products/export', 'inventory.xlsx');
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) =>
     setDraft((d) => (d ? { ...d, [key]: value } : d));
 
@@ -142,6 +155,9 @@ export default function AdminProducts() {
             onChange={(e) => setFilter(e.target.value)}
             style={{ maxWidth: 200 }}
           />
+          <button className="btn btn--ghost" onClick={exportInventory} disabled={exporting}>
+            {exporting ? 'Exporting…' : 'Export inventory'}
+          </button>
           <button
             className="btn btn--primary"
             onClick={() => setDraft(blank(leafCategories[0]?.id ?? 0))}

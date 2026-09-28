@@ -35,6 +35,27 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   return payload as T;
 }
 
+/** Fetches a file from the API (with the admin token) and hands it to the browser as a download. */
+export async function download(path: string, fallbackName: string) {
+  const token = getToken();
+  const res = await fetch(`/api${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) {
+    const payload = await res.json().catch(() => ({}));
+    throw new Error((payload as { error?: string }).error ?? 'The server did not respond.');
+  }
+
+  const disposition = res.headers.get('Content-Disposition') ?? '';
+  const name = /filename="([^"]+)"/.exec(disposition)?.[1] ?? fallbackName;
+  const url = URL.createObjectURL(await res.blob());
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = name;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 export async function uploadImages(files: FileList | File[]): Promise<string[]> {
   const form = new FormData();
   Array.from(files).forEach((f) => form.append('images', f));

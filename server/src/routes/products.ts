@@ -1,8 +1,15 @@
 import { Router } from 'express';
 import { z } from 'zod';
+import ExcelJS from 'exceljs';
 import { db } from '../db.js';
 import { requireAdmin } from '../auth.js';
-import { hydrateProduct, slugify, type ProductImage, type ProductRow } from '../types.js';
+import {
+  hydrateProduct,
+  slugify,
+  type CategoryRow,
+  type ProductImage,
+  type ProductRow,
+} from '../types.js';
 
 export const productsRouter = Router();
 
@@ -57,6 +64,71 @@ productsRouter.get('/', (req, res) => {
     .prepare(`${SELECT}${where} ORDER BY p.featured DESC, p.created_at DESC`)
     .all(...params) as Joined[];
   res.json(rows.map(hydrateProduct));
+});
+
+const EXPORT_COLUMNS = [
+  { header: 'Item name', key: 'name', width: 40 },
+  { header: 'Location', key: 'location', width: 18 },
+  { header: 'Cost', key: 'cost', width: 12, style: { numFmt: '#,##0.00' } },
+  { header: 'Listing price', key: 'price', width: 14, style: { numFmt: '#,##0.00' } },
+  { header: 'Purchase date', key: 'purchase_date', width: 15 },
+  { header: 'Sale date', key: 'sale_date', width: 15 },
+];
+
+/** Excel sheet names: max 31 chars, no []:*?/\ and unique (case-insensitive). */
+function sheetName(raw: string, taken: Set<string>) {
+  const base = raw.replace(/[[\]:*?/\\]/g, '-').trim().slice(0, 31) || 'Sheet';
+  let name = base;
+  for (let n = 2; taken.has(name.toLowerCase()); n++) {
+    const suffix = ` (${n})`;
+    name = base.slice(0, 31 - suffix.length) + suffix;
+  }
+  taken.add(name.toLowerCase());
+  return name;
+}
+
+/** GET /api/products/export - whole inventory as .xlsx, one sheet per category.
+ *  We don't track location, cost, purchase or sale dates yet, so those columns
+ *  are left blank for the admin to fill in. */
+productsRouter.get('/export', requireAdmin, async (_req, res) => {
+  const categories = db
+    .prepare(
+      `SELECT c.*, p.name AS parent_name FROM categories c
+       LEFT JOIN categories p ON p.id = c.parent_id
+       ORDER BY COALESCE(p.position, c.position), COALESCE(p.id, c.id),
+                c.parent_id IS NOT NULL, c.position, c.name`,
+    )
+    .all() as (CategoryRow & { parent_name: string | null })[];
+  const products = db.prepare('SELECT * FROM products ORDER BY name').all() as ProductRow[];
+
+  const workbook = new ExcelJS.Workbook();
+  const taken = new Set<string>();
+
+  for (const category of categories) {
+    const items = products.filter((p) => p.category_id === category.id);
+    if (!items.length) continue;
+
+    const label = category.parent_name ? `${category.parent_name} - ${category.name}` : category.name;
+    const sheet = workbook.addWorksheet(sheetName(label, taken), {
+      views: [{ state: 'frozen', ySplit: 1 }],
+    });
+    sheet.columns = EXPORT_COLUMNS;
+    sheet.getRow(1).font = { bold: true };
+    for (const p of items) sheet.addRow({ name: p.name, price: p.price });
+  }
+
+  if (!workbook.worksheets.length) {
+    workbook.addWorksheet('Inventory').columns = EXPORT_COLUMNS;
+  }
+
+  const date = new Date().toISOString().slice(0, 10);
+  res.setHeader(
+    'Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  );
+  res.setHeader('Content-Disposition', `attachment; filename="inventory-${date}.xlsx"`);
+  await workbook.xlsx.write(res);
+  res.end();
 });
 
 productsRouter.get('/:slug', (req, res) => {
