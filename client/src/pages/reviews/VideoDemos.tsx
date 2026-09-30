@@ -50,7 +50,7 @@ export default function VideoDemos() {
                 <span className="gallery__play" aria-hidden="true">▶</span>
                 <figcaption>
                   <strong>{demo.product_name}</strong>
-                  {demo.description && <span className="muted"> — {demo.description}</span>}
+                  {demo.description && <span className="muted">{demo.description}</span>}
                 </figcaption>
               </figure>
             ))}

@@ -882,7 +882,8 @@ textarea {
 
 .gallery__item {
   break-inside: avoid;
-  margin-bottom: 1rem;
+  /* Reset <figure>'s default margins so every column starts at the same top edge. */
+  margin: 0 0 1rem;
   padding: 0;
   width: 100%;
   border: 1px solid var(--steel-line);
@@ -903,6 +904,12 @@ textarea {
   font-size: 0.72rem;
   color: var(--grey);
   text-align: left;
+}
+
+.gallery__item--video figcaption strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--chalk);
 }
 
 .gallery__item--video video {
