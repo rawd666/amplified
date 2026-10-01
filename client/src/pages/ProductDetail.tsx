@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import StarRating from '../components/StarRating';
 import { useCart } from '../context/CartContext';
 import { api, INSTAGRAM_DM } from '../lib/api';
 import { getCropStyle } from '../lib/crop';
-import { money, shortDate } from '../lib/format';
-import type { Product, Review } from '../lib/types';
+import { money } from '../lib/format';
+import type { Product } from '../lib/types';
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { add } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
   const [shot, setShot] = useState(0);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState('');
@@ -22,9 +20,6 @@ export default function ProductDetail() {
     api<Product>(`/products/${slug}`)
       .then(setProduct)
       .catch((e: Error) => setError(e.message));
-    api<Review[]>(`/reviews?product=${slug}`)
-      .then(setReviews)
-      .catch(() => setReviews([]));
   }, [slug]);
 
   if (error) {
@@ -129,33 +124,6 @@ export default function ProductDetail() {
           </p>
         </div>
       </div>
-
-      <section className="section section--edge">
-        <p className="stencil">What players said</p>
-        <h2 className="headline headline--md" style={{ marginBottom: '1.5rem' }}>
-          Reviews
-        </h2>
-        {reviews.length === 0 ? (
-          <div className="empty">
-            No reviews for this one yet.{' '}
-            <Link to="/reviews/write" style={{ color: 'var(--violet-hot)' }}>
-              Be the first →
-            </Link>
-          </div>
-        ) : (
-          reviews.map((r) => (
-            <article className="review" key={r.id}>
-              <div className="review__top">
-                <span className="review__who">{r.author}</span>
-                <span className="review__when">{shortDate(r.created_at)}</span>
-              </div>
-              <StarRating value={r.rating} />
-              {r.title && <h3>{r.title}</h3>}
-              <p>{r.body}</p>
-            </article>
-          ))
-        )}
-      </section>
     </div>
   );
 }

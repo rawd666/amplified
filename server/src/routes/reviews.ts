@@ -26,13 +26,7 @@ reviewsRouter.get('/', (req, res) => {
       res.json(db.prepare(`${SELECT} ORDER BY r.created_at DESC`).all());
     });
   }
-  const params: unknown[] = [];
-  let where = ' WHERE r.approved = 1';
-  if (req.query.product) {
-    where += ' AND p.slug = ?';
-    params.push(String(req.query.product));
-  }
-  res.json(db.prepare(`${SELECT}${where} ORDER BY r.created_at DESC`).all(...params));
+  res.json(db.prepare(`${SELECT} WHERE r.approved = 1 ORDER BY r.created_at DESC`).all());
 });
 
 reviewsRouter.post('/', (req, res) => {
