@@ -1,12 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import VideoUploader from '../../components/VideoUploader';
 import { api } from '../../lib/api';
-import type { Demo } from '../../lib/types';
+import type { Demo, Product } from '../../lib/types';
 
 export default function AdminVideoDemos() {
   const [demos, setDemos] = useState<Demo[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [video, setVideo] = useState('');
   const [productName, setProductName] = useState('');
+  const [productId, setProductId] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -15,7 +17,42 @@ export default function AdminVideoDemos() {
 
   useEffect(() => {
     load().catch((e) => setError((e as Error).message));
+    api<Product[]>('/products')
+      .then((p) => setProducts([...p].sort((a, b) => a.name.localeCompare(b.name))))
+      .catch((e) => setError((e as Error).message));
   }, []);
+
+  // Picking a product fills in the name too, unless the admin already typed one.
+  const pickProduct = (id: string) => {
+    setProductId(id);
+    const product = products.find((p) => String(p.id) === id);
+    if (product && !productName.trim()) setProductName(product.name);
+  };
+
+  const link = async (demo: Demo, id: string) => {
+    setError('');
+    try {
+      await api(`/demos/${demo.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ product_id: id ? Number(id) : null }),
+      });
+      await load();
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  const productOptions = (
+    <>
+      <option value="">Not linked</option>
+      {products.map((p) => (
+        <option key={p.id} value={p.id}>
+          {p.name}
+          {p.stock <= 0 ? ' (sold out)' : ''}
+        </option>
+      ))}
+    </>
+  );
 
   const add = async (e: FormEvent) => {
     e.preventDefault();
@@ -25,10 +62,17 @@ export default function AdminVideoDemos() {
     try {
       await api('/demos', {
         method: 'POST',
-        body: JSON.stringify({ url: video, product_name: productName, description, position: 0 }),
+        body: JSON.stringify({
+          url: video,
+          product_name: productName,
+          product_id: productId ? Number(productId) : null,
+          description,
+          position: 0,
+        }),
       });
       setVideo('');
       setProductName('');
+      setProductId('');
       setDescription('');
       await load();
     } catch (err) {
@@ -63,6 +107,13 @@ export default function AdminVideoDemos() {
         <VideoUploader video={video} onChange={setVideo} label="Clip" />
 
         <label className="field">
+          <span>Show on product page</span>
+          <select value={productId} onChange={(e) => pickProduct(e.target.value)}>
+            {productOptions}
+          </select>
+        </label>
+
+        <label className="field">
           <span>Product / rig name</span>
           <input
             value={productName}
@@ -91,6 +142,7 @@ export default function AdminVideoDemos() {
           <tr>
             <th />
             <th>Product / rig</th>
+            <th>Product page</th>
             <th>Description</th>
             <th />
           </tr>
@@ -102,6 +154,11 @@ export default function AdminVideoDemos() {
                 <video className="table__thumb" src={d.url} muted preload="metadata" />
               </td>
               <td>{d.product_name}</td>
+              <td>
+                <select value={d.product_id ?? ''} onChange={(e) => link(d, e.target.value)}>
+                  {productOptions}
+                </select>
+              </td>
               <td>{d.description || '-'}</td>
               <td>
                 <div className="table__actions">
@@ -114,7 +171,7 @@ export default function AdminVideoDemos() {
           ))}
           {!demos.length && (
             <tr>
-              <td colSpan={4}>
+              <td colSpan={5}>
                 <div className="empty">No clips yet.</div>
               </td>
             </tr>

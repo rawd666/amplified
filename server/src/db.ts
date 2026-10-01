@@ -64,6 +64,7 @@ db.exec(`
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     url           TEXT NOT NULL,
     product_name  TEXT NOT NULL DEFAULT '',
+    product_id    INTEGER REFERENCES products(id) ON DELETE SET NULL,
     description   TEXT NOT NULL DEFAULT '',
     position      INTEGER NOT NULL DEFAULT 0,
     created_at    TEXT NOT NULL DEFAULT (datetime('now'))
@@ -170,6 +171,17 @@ if (orphanCount > 0) {
     .prepare('SELECT id FROM gallery_categories WHERE slug = ?')
     .get('uncategorized') as { id: number };
   db.prepare('UPDATE gallery SET category_id = ? WHERE category_id IS NULL').run(folder.id);
+}
+
+// Demos can be linked to the product they show off, so the clip appears on
+// that product's page. Existing clips get linked where the names match exactly.
+const demoCols = db.prepare('PRAGMA table_info(demos)').all() as { name: string }[];
+if (!demoCols.some((c) => c.name === 'product_id')) {
+  db.exec('ALTER TABLE demos ADD COLUMN product_id INTEGER REFERENCES products(id) ON DELETE SET NULL');
+  db.exec(`
+    UPDATE demos SET product_id = (
+      SELECT p.id FROM products p WHERE lower(trim(p.name)) = lower(trim(demos.product_name))
+    )`);
 }
 
 export function reference(prefix: string) {

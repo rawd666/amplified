@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import VideoLightbox from '../components/VideoLightbox';
 import { useCart } from '../context/CartContext';
 import { api, INSTAGRAM_DM } from '../lib/api';
 import { getCropStyle } from '../lib/crop';
 import { money } from '../lib/format';
-import type { Product } from '../lib/types';
+import type { Demo, Product } from '../lib/types';
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { add } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
+  const [demos, setDemos] = useState<Demo[]>([]);
+  const [playing, setPlaying] = useState<Demo | null>(null);
   const [shot, setShot] = useState(0);
   const [qty, setQty] = useState(1);
   const [error, setError] = useState('');
@@ -20,6 +23,10 @@ export default function ProductDetail() {
     api<Product>(`/products/${slug}`)
       .then(setProduct)
       .catch((e: Error) => setError(e.message));
+    // The server only returns demos while the product is in stock.
+    api<Demo[]>(`/demos?product=${slug}`)
+      .then(setDemos)
+      .catch(() => setDemos([]));
   }, [slug]);
 
   if (error) {
@@ -124,6 +131,33 @@ export default function ProductDetail() {
           </p>
         </div>
       </div>
+
+      {demos.length > 0 && !out && (
+        <section className="section section--edge">
+          <p className="stencil">Hear it first</p>
+          <h2 className="headline headline--md" style={{ marginBottom: '1.5rem' }}>
+            Gear demo
+          </h2>
+          <div className="gallery">
+            {demos.map((demo) => (
+              <figure
+                key={demo.id}
+                className="gallery__item gallery__item--video"
+                onClick={() => setPlaying(demo)}
+              >
+                <video src={demo.url} muted preload="metadata" />
+                <span className="gallery__play" aria-hidden="true">▶</span>
+                <figcaption>
+                  <strong>{demo.product_name}</strong>
+                  {demo.description && <span className="muted">{demo.description}</span>}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {playing && <VideoLightbox demo={playing} onClose={() => setPlaying(null)} />}
     </div>
   );
 }

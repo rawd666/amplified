@@ -43,6 +43,7 @@ export interface DemoRow {
   id: number;
   url: string;
   product_name: string;
+  product_id: number | null;
   description: string;
   position: number;
   created_at: string;
