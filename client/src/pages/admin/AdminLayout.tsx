@@ -8,6 +8,7 @@ const TABS = [
   { to: '/admin/demos', label: 'Gear demos' },
   { to: '/admin/reviews', label: 'Reviews' },
   { to: '/admin/orders', label: 'Orders & bookings' },
+  { to: '/admin/assets', label: 'Asset library' },
 ];
 
 export default function AdminLayout() {

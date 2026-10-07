@@ -25,6 +25,7 @@ import AdminGallery from './pages/admin/AdminGallery';
 import AdminVideoDemos from './pages/admin/AdminVideoDemos';
 import AdminReviews from './pages/admin/AdminReviews';
 import AdminOrders from './pages/admin/AdminOrders';
+import AdminAssets from './pages/admin/AdminAssets';
 
 import { api } from './lib/api';
 import type { Category } from './lib/types';
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="demos" element={<AdminVideoDemos />} />
             <Route path="reviews" element={<AdminReviews />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="assets" element={<AdminAssets />} />
           </Route>
           <Route path="/admin/*" element={<AdminLogin />} />
         </Routes>
