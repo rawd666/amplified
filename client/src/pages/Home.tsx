@@ -31,16 +31,21 @@ export default function Home() {
           <div className="hero__head">
             <div className="hero__guitar" aria-hidden="true">
               <div className="hero__guitar-inner">
-                <img className="hero__guitar-img hero__guitar-img--back" src="/guitar.svg" alt="" />
-                <img className="hero__guitar-img hero__guitar-img--front" src="/guitar.svg" alt="" />
+                <img className="hero__guitar-img hero__guitar-img--shadow" src="/guitar-hero-1.webp" alt="" />
+                <img className="hero__guitar-img hero__guitar-img--back" src="/guitar-hero-1.webp" alt="" />
+                <img className="hero__guitar-img hero__guitar-img--front" src="/guitar-hero-1.webp" alt="" />
               </div>
             </div>
 
             <p className="stencil stencil--violet">Amman · Est. 2022</p>
             <h1 className="headline headline--xl hero__title">
-              Gear that
-              <span>earns its</span>
-              volume
+              {/*<span className="hero__title-front">Gear t</span>*/}
+              <span className="hero__title-behind">Gear tha</span>
+              <span className="hero__title-front">t</span>
+              <span className="hero__title-accent">
+                earns <em className="hero__title-white">its</em>
+              </span>
+              <span className="hero__title-under-shadow">volume</span>
             </h1>
           </div>
           <p className="hero__lede">

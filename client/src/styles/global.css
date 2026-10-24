@@ -21,7 +21,7 @@
   --violet-deep: #34213f;
 
   /* type */
-  --display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --display: 'Montserrat', Arial, sans-serif;
   --body: 'Space Grotesk', system-ui, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
 
@@ -314,11 +314,10 @@ textarea {
 
 .plate__logo {
   display: block;
-  height: 90px;
+  /* logo1.png is tightly cropped (no transparent padding), so it needs less
+     height than the old padded logo.png to read at a similar size. */
+  height: 70px;
   width: auto;
-  /* logo.png has uneven transparent padding (more above the mark than below),
-     so centering its box doesn't center the visible mark - nudge it up. */
-  transform: translateY(-5.4px);
 }
 
 .plate__nav {
@@ -456,11 +455,39 @@ textarea {
   z-index: 1;
 }
 
-.hero__title span {
-  display: block;
-  color: var(--violet);
+/* -behind tucks text under both guitar layers (below
+   .hero__guitar-img--back's z-index: -2) while staying above the guitar's
+   shadow (.hero__guitar-img--shadow, z-index: -4); -front lifts text
+   above the front layer. */
+.hero__title-front {
+  position: relative;
+  z-index: 2;
 }
 
+.hero__title-behind {
+  position: relative;
+  z-index: -3;
+}
+
+/* sits under the guitar's shadow too, so the shadow falls across it */
+.hero__title-under-shadow {
+  position: relative;
+  z-index: -5;
+}
+
+.hero__title-accent {
+  display: block;
+  color: var(--violet);
+  /* lifts the middle line above .hero__guitar-img--front (z-index: 1), so
+     it reads over the guitar body while the last line stays tucked behind */
+  position: relative;
+  z-index: 2;
+}
+
+.hero__title-white {
+  font-style: normal;
+  color: var(--white);
+}
 .hero__lede {
   max-width: 44ch;
   margin: 1.5rem 0 2rem;
@@ -490,9 +517,9 @@ textarea {
 
 .hero__guitar-inner {
   position: relative;
-  top: 2vw;
+  top: 4vw;
   width: 70vw;
-  max-width: 460px;
+  max-width: 560px;
   aspect-ratio: 3 / 2;
 }
 
@@ -514,7 +541,18 @@ textarea {
      since a transform on that shared wrapper would merge both split layers
      into one painted unit and break the behind/in-front z-index split. */
   transform: translateX(3%) rotate(-8deg);
-  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6));
+}
+
+/* the guitar's shadow on its own layer, below everything, so headline text
+   can sit above the shadow but still below the guitar itself. It's a
+   blacked-out, blurred copy of the image - the same look the old
+   drop-shadow(0 20px 40px rgba(0, 0, 0, 0.6)) gave each layer. The trailing
+   translateY runs after the rotation, so the offset tilts with the guitar
+   just like a drop-shadow's would. */
+.hero__guitar-img--shadow {
+  z-index: -4;
+  transform: translateX(3%) rotate(-8deg) translateY(20px);
+  filter: brightness(0) blur(20px) opacity(0.6);
 }
 
 .hero__guitar-img--back {
@@ -530,7 +568,7 @@ textarea {
 @media (min-width: 901px) {
   .hero__guitar-inner {
     width: 70vw;
-    max-width: 1000px;
+    max-width: 1150px;
   }
 }
 

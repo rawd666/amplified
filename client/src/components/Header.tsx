@@ -20,7 +20,7 @@ export default function Header({ categories }: { categories: Category[] }) {
     <header className="plate">
       <div className="shell plate__inner">
         <Link to="/" className="plate__brand">
-          <img src="/logo.png" alt="Amplified" className="plate__logo" />
+          <img src="/logo1.png" alt="Amplified" className="plate__logo" />
         </Link>
 
         <nav className="plate__nav" data-open={navOpen} aria-label="Main">

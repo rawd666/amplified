@@ -18,11 +18,11 @@ const COLOURS = [
 
 const TYPEFACES = [
   {
-    name: 'Big Shoulders Display',
+    name: 'Montserrat',
     role: 'Display - headlines',
     family: 'var(--display)',
     weights: '500 · 700 · 900',
-    href: 'https://fonts.google.com/specimen/Big+Shoulders+Display',
+    href: 'https://fonts.google.com/specimen/Montserrat',
   },
   {
     name: 'Space Grotesk',
