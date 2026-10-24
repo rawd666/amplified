@@ -134,6 +134,18 @@ textarea {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
 }
 
+/* for headlines showing names people typed (products, categories, gallery
+   folders) - keep their own capitalization instead of forcing caps */
+.headline--as-written {
+  text-transform: none;
+  /* ~10% under the regular headline sizes (an h2's default is 1.5em) */
+  font-size: 1.35em;
+}
+
+.headline--lg.headline--as-written {
+  font-size: clamp(2.15rem, 5.4vw, 3.6rem);
+}
+
 .price {
   font-family: var(--mono);
   font-weight: 500;
@@ -711,8 +723,7 @@ textarea {
 .card__name {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 1.5rem;
-  text-transform: uppercase;
+  font-size: 1.35rem;
   line-height: 1;
   margin: 0;
 }
@@ -1011,8 +1022,7 @@ textarea {
   margin-top: 0.6rem;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 1.1rem;
-  text-transform: uppercase;
+  font-size: 1rem;
   line-height: 1;
 }
 
@@ -1133,8 +1143,7 @@ textarea {
 .review h3 {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 1.4rem;
-  text-transform: uppercase;
+  font-size: 1.25rem;
   margin: 0.25rem 0 0.5rem;
 }
 

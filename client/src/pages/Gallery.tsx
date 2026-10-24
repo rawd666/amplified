@@ -56,7 +56,7 @@ export default function Gallery() {
             <button className="btn btn--ghost btn--sm gallery-back" onClick={() => setOpenFolder(null)}>
               ← All folders
             </button>
-            <h2 className="headline" style={{ marginBottom: '1.5rem' }}>
+            <h2 className="headline headline--as-written" style={{ marginBottom: '1.5rem' }}>
               {openFolder.name}
             </h2>
             {folderShots.length === 0 ? (

@@ -80,7 +80,7 @@ export default function ProductDetail() {
             <Link to={`/store/${product.category_slug}`}>{product.category_name}</Link>
             {product.brand && ` · ${product.brand}`}
           </p>
-          <h1 className="headline headline--lg">{product.name}</h1>
+          <h1 className="headline headline--lg headline--as-written">{product.name}</h1>
           <p className="detail__price price">{money(product.price)}</p>
           <p className="muted">{product.description}</p>
 
