@@ -166,36 +166,37 @@ export default function Home() {
 
       <section className="section section--edge">
         <div className="shell">
-          <div className="rig" style={{ padding: 'clamp(1.5rem, 4vw, 3rem)' }}>
-            <div className="rig__head" style={{ borderBottom: 0, paddingBottom: 0 }}>
-              <span className="lamp" aria-hidden="true" />
-              <span>How buying works</span>
-            </div>
-            <div
-              style={{
-                display: 'grid',
-                gap: '1.5rem',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                marginTop: '1.75rem',
-              }}
-            >
-              <div>
-                <p className="stencil stencil--violet">Pay in cash</p>
-                <p className="muted" style={{ margin: 0 }}>
-                  No cards, no transfers. You hand the driver the cash when the box is in your hands.
-                </p>
-              </div>
-              <div>
-                <p className="stencil stencil--violet">Or come and play it</p>
-                <p className="muted" style={{ margin: 0 }}>
-                  Book a slot and we will have it tuned, plugged in and waiting for you.
-                </p>
-              </div>
-              <div>
-                <p className="stencil stencil--violet">Questions go to the DMs</p>
-                <p className="muted" style={{ margin: 0 }}>
-                  We answer Instagram faster than email. Ask about stock, tone, anything.
-                </p>
+          <div className="pedal-info">
+            <div className="pedal-info__inner">
+              <h2 className="pedal-info__title">How buying works</h2>
+              <div className="pedal-info__steps">
+                <div>
+                  <p className="pedal-info__step stencil stencil--violet">
+                    <span className="lamp" aria-hidden="true" />
+                    Pay in cash
+                  </p>
+                  <p className="muted">
+                    No cards, no transfers. You hand the driver the cash when the box is in your hands.
+                  </p>
+                </div>
+                <div>
+                  <p className="pedal-info__step stencil stencil--violet">
+                    <span className="lamp" aria-hidden="true" />
+                    Or come and play it
+                  </p>
+                  <p className="muted">
+                    Book a slot and we will have it tuned, plugged in and waiting for you.
+                  </p>
+                </div>
+                <div>
+                  <p className="pedal-info__step stencil stencil--violet">
+                    <span className="lamp" aria-hidden="true" />
+                    Questions go to the DMs
+                  </p>
+                  <p className="muted">
+                    We answer Instagram faster than email. Ask about stock, tone, anything.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

@@ -449,7 +449,7 @@ textarea {
 .hero {
   position: relative;
   padding-top: clamp(3rem, 8vw, 6rem);
-  padding-bottom: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: clamp(0.75rem, 2vw, 1.5rem);
   min-height: clamp(480px, 56vw, 640px);
   overflow: hidden;
 }
@@ -619,6 +619,127 @@ textarea {
   color: var(--grey);
 }
 
+/* "How buying works" printed on the side of a pedal. Everything is placed
+   in percentages of pedal-info-1.webp (2048x788) so it stays pinned to the
+   artwork at any width: the black face spans x 8.4-91.5%, y 24.2-91.1%,
+   and the input jack is centred at x 14.9%, y 41.3%.
+
+   The image is blown up so the pedal itself (not its transparent margins)
+   spans the same width as the sections above: 2048 / 1702 of the column,
+   pulled left by the 173px left margin. The overhanging margins are
+   clipped so they can't cause sideways scrolling. Text sizes use cqw
+   (1% of the column) times --pedal-scale, so they stay in proportion to
+   the enlarged artwork. */
+.pedal-info {
+  --pedal-scale: 1.2033;
+  container-type: inline-size;
+  overflow-x: clip;
+}
+
+.pedal-info__inner {
+  position: relative;
+  width: calc(100% * 2048 / 1702);
+  margin-left: calc(-100% * 173 / 1702);
+  aspect-ratio: 2048 / 788;
+  background: url('/pedal-info-1.webp') center / 100% 100% no-repeat;
+}
+
+.pedal-info__title {
+  position: absolute;
+  left: 18.2%;
+  top: 41.3%;
+  transform: translateY(-50%);
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: calc(2.6cqw * var(--pedal-scale));
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pedal-info__steps {
+  position: absolute;
+  left: 13.33%;
+  right: 13.33%;
+  top: 53%;
+  bottom: 14%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(3cqw * var(--pedal-scale));
+  align-content: start;
+}
+
+.pedal-info__step {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  font-size: max(0.62rem, calc(0.95cqw * var(--pedal-scale)));
+  margin: 0 0 calc(0.8cqw * var(--pedal-scale));
+}
+
+/* flat, bright LEDs on the pedal instead of the shaded jewel lamp - the
+   same purple as the lamp's glow */
+.pedal-info__step .lamp {
+  background: #8b3dff;
+}
+
+.pedal-info__steps .muted {
+  margin: 0;
+  font-size: max(0.75rem, calc(1.25cqw * var(--pedal-scale)));
+  line-height: 1.45;
+}
+
+/* Too narrow for the copy to fit on the pedal's face - drop the artwork
+   for a plain panel in the pedal's black, with a drawn jack by the title. */
+@container (max-width: 631px) {
+  .pedal-info__inner {
+    width: auto;
+    margin-left: 0;
+    aspect-ratio: auto;
+    background: #202020;
+    border-radius: var(--radius);
+    padding: 1.75rem 1.5rem;
+  }
+
+  .pedal-info__title {
+    position: static;
+    transform: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.6rem;
+    white-space: normal;
+  }
+
+  .pedal-info__title::before {
+    content: '';
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #000;
+    border: 4px solid #8a8a8a;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+  }
+
+  .pedal-info__steps {
+    position: static;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .pedal-info__step {
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .pedal-info__steps .muted {
+    font-size: 0.95rem;
+  }
+}
+
 /* ============================================================
    Sections & product grid
    ============================================================ */
@@ -635,6 +756,16 @@ textarea {
 
 .section:has(+ .section) {
   padding-bottom: clamp(1rem, 2vw, 1.5rem);
+}
+
+/* home page: half the usual gap below the hero, and above the footer
+   after the "How buying works" pedal */
+.hero + .section {
+  padding-top: clamp(1.75rem, 4vw, 3rem);
+}
+
+.section:has(.pedal-info) {
+  padding-bottom: clamp(1.75rem, 4vw, 3rem);
 }
 
 
