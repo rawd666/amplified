@@ -7,14 +7,14 @@
 
 :root {
   /* colour */
-  --ink: #0b0a0e;
-  --ink-2: #131118;
-  --panel: #1a1822;
-  --steel: #2c2936;
-  --steel-line: #3a3745;
-  --grey: #8e8a9c;
-  --grey-dim: #605c6e;
-  --chalk: #f5f4f8;
+  --ink: #121212;
+  --ink-2: #202020;
+  --panel: #1D1D1D;
+  --steel: #2A2A2A;
+  --steel-line: #4A4A4A;
+  --grey: #A6A6A6;
+  --grey-dim: #5E5E5E;
+  --chalk: #F8F7F4;
   --white: #ffffff;
   --violet: #713991;
   --violet-hot: #8141a6;
@@ -30,14 +30,10 @@
   --radius: 3px;
   --lamp-glow: 0 0 12px rgba(139, 61, 255, 0.9), 0 0 34px rgba(139, 61, 255, 0.45);
 
-  /* brushed metal, used on every faceplate strip */
-  --brushed: repeating-linear-gradient(
-    90deg,
-    #2f2c39 0px,
-    #35323f 1px,
-    #2a2733 2px,
-    #322f3c 3px
-  );
+  /* film grain over the panel colour, used on every faceplate strip */
+  --brushed:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.3' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E"),
+    var(--steel);
 }
 
 * {
@@ -176,7 +172,7 @@ textarea {
 
 .btn:hover:not(:disabled) {
   border-color: var(--violet);
-  background: #221d33;
+  background: #291d33;
 }
 
 .btn:active:not(:disabled) {
@@ -301,15 +297,15 @@ textarea {
   top: 0;
   z-index: 40;
   background: var(--brushed);
-  border-bottom: 1px solid var(--steel-line);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  border-bottom: 0.5px solid var(--steel-line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.089);
 }
 
 .plate__inner {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  height: 74px;
+  height: 80px;
 }
 
 .plate__brand {
@@ -564,7 +560,7 @@ textarea {
 .hero__guitar-img--shadow {
   z-index: -4;
   transform: translateX(3%) rotate(-8deg) translateY(20px);
-  filter: brightness(0) blur(20px) opacity(0.6);
+  filter: brightness(0) blur(20px) opacity(0.3);
 }
 
 .hero__guitar-img--back {
