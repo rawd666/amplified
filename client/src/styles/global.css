@@ -322,11 +322,10 @@ textarea {
 
 .plate__logo {
   display: block;
-  height: 90px;
+  /* logo1.png is tightly cropped (no transparent padding), so it needs less
+     height than the old padded logo.png to read at a similar size. */
+  height: 70px;
   width: auto;
-  /* logo.png has uneven transparent padding (more above the mark than below),
-     so centering its box doesn't center the visible mark - nudge it up. */
-  transform: translateY(-5.4px);
 }
 
 .plate__nav {

@@ -25,7 +25,7 @@ export default function AdminLayout() {
       <nav className="admin__rail">
         <div className="admin__brand">
           <div className="plate__brand" style={{ marginBottom: '0.75rem' }}>
-              <img src="/logo.png" alt="Amplified" className="plate__logo" />
+              <img src="/logo1.png" alt="Amplified" className="plate__logo" />
           </div>
         </div>
 

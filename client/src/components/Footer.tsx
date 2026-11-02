@@ -9,7 +9,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
         <div className="foot__grid">
           <div>
             <div className="plate__brand" style={{ marginBottom: '0.75rem' }}>
-              <img src="/logo.png" alt="Amplified" className="plate__logo" />
+              <img src="/logo1.png" alt="Amplified" className="plate__logo" />
             </div>
             <a className="foot__dm" href={INSTAGRAM_DM} target="_blank" rel="noreferrer">
               ◎ DM us on Instagram
